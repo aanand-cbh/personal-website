@@ -1,0 +1,81 @@
+---
+title: Learning Next.js - My Experience
+date: 2025-05-05
+description: My thoughts on learning and using Next.js for web development
+tags: [Next.js, React, Learning]
+---
+
+Next.js is a powerful framework for building React applications. In this post, I'll share my experience learning and using Next.js.
+
+## Why Next.js?
+
+I chose Next.js for several reasons:
+
+- **Server-side rendering**: Improves performance and SEO
+- **File-based routing**: Simplifies navigation structure
+- **API routes**: Makes it easy to create backend functionality
+- **Image optimization**: Automatically optimizes images for performance
+- **Great developer experience**: Hot reloading, error reporting, etc.
+
+## Getting Started
+
+Getting started with Next.js is straightforward. The documentation is excellent, and there are many tutorials and courses available.
+
+I started with the official tutorial on the Next.js website, which walks you through building a simple blog. This gave me a good understanding of the basics.
+
+## Features I Love
+
+### 1. File-based Routing
+
+Next.js uses the file system for routing, which makes it intuitive to create new pages:
+
+\`\`\`
+pages/
+  index.js         // -> /
+  about.js         // -> /about
+  blog/
+    index.js       // -> /blog
+    [slug].js      // -> /blog/:slug
+\`\`\`
+
+### 2. Server Components
+
+With the App Router, Next.js introduced React Server Components, which allow you to render components on the server:
+
+<CodeSnippet 
+  language="jsx" 
+  code={`// This component renders on the server
+export default function ServerComponent() {
+  return <div>I'm rendered on the server!</div>;
+}`} 
+/>
+
+### 3. Data Fetching
+
+Next.js provides several ways to fetch data, including `getStaticProps`, `getServerSideProps`, and now with the App Router, async/await in Server Components:
+
+<CodeSnippet 
+  language="jsx" 
+  code={`async function getData() {
+  const res = await fetch('https://api.example.com/data');
+  return res.json();
+}
+
+export default async function Page() {
+  const data = await getData();
+  return <div>{data.title}</div>;
+}`} 
+/>
+
+## Challenges
+
+Like any technology, Next.js has its challenges:
+
+- Understanding the different rendering strategies and when to use each one
+- Learning the App Router after being familiar with the Pages Router
+- Dealing with hydration errors when mixing client and server components
+
+## Conclusion
+
+Overall, I've had a positive experience learning and using Next.js. It's a powerful tool that I'll continue to use for future projects. If you're considering learning Next.js, I highly recommend it!
+\`\`\`

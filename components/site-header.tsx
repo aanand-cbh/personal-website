@@ -1,9 +1,11 @@
-import Link from "next/link"
-import { Menu } from "lucide-react"
+"use client"
 
+import { Menu } from "lucide-react"
+import Link from "next/link"
+
+import { ThemeToggle } from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { ThemeToggle } from "@/components/theme-toggle"
 
 export function SiteHeader() {
   return (

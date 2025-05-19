@@ -1,10 +1,10 @@
+import { FileText } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { FileText, Linkedin } from "lucide-react"
 
+import { SiteHeader } from "@/components/site-header"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { SiteHeader } from "@/components/site-header"
 
 export default function AboutPage() {
   return (
@@ -41,8 +41,23 @@ export default function AboutPage() {
                     <h2 className="text-2xl font-bold">Connect With Me</h2>
                     <div className="flex flex-col gap-2 min-[400px]:flex-row">
                       <Button asChild variant="outline" className="gap-1">
-                        <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer">
-                          <Linkedin className="h-4 w-4" />
+                        <a href="https://linkedin.com/in/abhishekaanand" target="_blank" rel="noopener noreferrer">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="h-4 w-4"
+                          >
+                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                            <rect width="4" height="12" x="2" y="9"></rect>
+                            <circle cx="4" cy="4" r="2"></circle>
+                          </svg>
                           LinkedIn
                         </a>
                       </Button>

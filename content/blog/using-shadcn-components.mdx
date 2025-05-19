@@ -1,0 +1,79 @@
+---
+title: Using shadcn/ui Components in MDX
+date: 2025-05-15
+description: How to use shadcn/ui components directly in your MDX blog posts
+tags: [shadcn/ui, MDX, Styling]
+---
+
+One of the great benefits of using MDX for your blog posts is the ability to include React components directly in your markdown. With our setup, you can use shadcn/ui components right in your blog posts!
+
+## Basic Usage
+
+The standard markdown syntax works as expected:
+
+- **Bold text** and *italic text*
+- [Links to other sites](https://shadcn.com)
+- Lists, like the one you're reading now
+
+## Tables with shadcn/ui
+
+Tables are automatically styled using shadcn/ui's Table component:
+
+| Name | Role | Department |
+|------|------|------------|
+| John Doe | Developer | Engineering |
+| Jane Smith | Designer | Design |
+| Bob Johnson | Manager | Administration |
+
+## Using Alert Components
+
+You can use the Alert component directly in your MDX:
+
+<Alert>
+  This is an important message for your readers!
+</Alert>
+
+## Cards for Highlighted Content
+
+Use Card components to highlight important information:
+
+<Card>
+  <CardContent>
+    This content is displayed in a shadcn/ui Card component, making it stand out from the rest of your blog post.
+  </CardContent>
+</Card>
+
+## Badges for Categories or Tags
+
+You can use Badge components inline:
+
+This post is about <Badge>shadcn/ui</Badge> and <Badge>MDX</Badge>.
+
+## Code Blocks
+
+Code blocks are styled with proper syntax highlighting:
+
+<CodeSnippet 
+  language="jsx" 
+  code={`function Welcome() {
+    return <h1>Hello, world!</h1>;
+}`} 
+/>
+
+You can also show function components with props:
+
+<CodeSnippet 
+  language="jsx" 
+  code={`function Greeting({ name }) {
+    return <h1>Hello, {name}!</h1>;
+}`} 
+/>
+
+## Benefits of Using shadcn/ui in MDX
+
+1. **Consistent Design**: Your blog posts match the rest of your website
+2. **Interactive Components**: Add interactive elements to your content
+3. **Customizable**: Easily customize the appearance of your components
+4. **Accessibility**: shadcn/ui components are built with accessibility in mind
+
+Try adding some shadcn/ui components to your next blog post!
