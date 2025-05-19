@@ -1,6 +1,7 @@
 import type { MDXComponents } from "mdx/types"
 import Image from "next/image"
 import Link from "next/link"
+import React from "react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
@@ -121,9 +122,22 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     pre: ({ className, children, ...props }) => {
       const match = /language-(\w+)/.exec(className || '')
       const language = match ? match[1] : ''
+      
+      // Check if children is an object with props (MDX nested structure)
+      if (React.isValidElement(children)) {
+        const childElement = children as React.ReactElement<{children?: React.ReactNode}>
+        if (childElement.props?.children) {
+          return (
+            <CodeBlock language={language} className={className} {...props}>
+              {childElement.props.children}
+            </CodeBlock>
+          )
+        }
+      }
+      
       return (
         <CodeBlock language={language} className={className} {...props}>
-          {String(children).replace(/\n$/, '')}
+          {children}
         </CodeBlock>
       )
     },

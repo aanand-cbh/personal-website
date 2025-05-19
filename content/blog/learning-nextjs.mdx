@@ -29,14 +29,14 @@ I started with the official tutorial on the Next.js website, which walks you thr
 
 Next.js uses the file system for routing, which makes it intuitive to create new pages:
 
-\`\`\`
+```
 pages/
   index.js         // -> /
   about.js         // -> /about
   blog/
     index.js       // -> /blog
     [slug].js      // -> /blog/:slug
-\`\`\`
+```
 
 ### 2. Server Components
 
@@ -46,7 +46,7 @@ With the App Router, Next.js introduced React Server Components, which allow you
   language="jsx" 
   code={`// This component renders on the server
 export default function ServerComponent() {
-  return <div>I'm rendered on the server!</div>;
+    return <div>I'm rendered on the server!</div>;
 }`} 
 />
 
@@ -57,13 +57,13 @@ Next.js provides several ways to fetch data, including `getStaticProps`, `getSer
 <CodeSnippet 
   language="jsx" 
   code={`async function getData() {
-  const res = await fetch('https://api.example.com/data');
-  return res.json();
+    const res = await fetch('https://api.example.com/data');
+    return res.json();
 }
 
 export default async function Page() {
   const data = await getData();
-  return <div>{data.title}</div>;
+    return <div>{data.title}</div>;
 }`} 
 />
 
@@ -78,4 +78,3 @@ Like any technology, Next.js has its challenges:
 ## Conclusion
 
 Overall, I've had a positive experience learning and using Next.js. It's a powerful tool that I'll continue to use for future projects. If you're considering learning Next.js, I highly recommend it!
-\`\`\`

@@ -6,7 +6,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { nightOwl } from "react-syntax-highlighter/dist/esm/styles/prism"
 
 interface CodeBlockProps {
-  children: string
+  children: string | React.ReactNode
   language?: string
   className?: string
 }
@@ -15,11 +15,20 @@ export function CodeBlock({ children, language = 'text', className }: CodeBlockP
   // Extract language from className if provided (format: "language-js")
   const languageFromClass = className?.replace(/language-/, '') || language
   
-  // Clean the code string (trim and remove any raw literal markers)
-  const code = React.Children.toArray(children)
-    .filter((child): child is string => typeof child === 'string')
-    .join('')
-    .trim()
+  // Clean the code string (handle different types of input)
+  let code = ''
+  
+  if (typeof children === 'string') {
+    code = children.trim()
+  } else if (React.isValidElement(children)) {
+    // Type guard for React elements with props.children
+    const childElement = children as React.ReactElement<{children?: React.ReactNode}>
+    if (childElement.props?.children) {
+      code = String(childElement.props.children).trim()
+    }
+  } else {
+    code = String(children).trim()
+  }
   
   return (
     <div className={cn("relative my-6 rounded-md overflow-hidden", className)}>
