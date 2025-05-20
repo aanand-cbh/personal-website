@@ -2,6 +2,7 @@
 title: Using shadcn/ui Components in MDX
 date: 2025-05-15
 description: How to use shadcn/ui components directly in your MDX blog posts
+image: /blog/shadcn-logo.svg
 tags: [shadcn/ui, MDX, Styling]
 ---
 
@@ -54,7 +55,7 @@ This post is about <Badge>shadcn/ui</Badge> and <Badge>MDX</Badge>.
 Code blocks are styled with proper syntax highlighting:
 
 <CodeSnippet 
-  language="jsx" 
+  language="js" 
   code={`function Welcome() {
     return <h1>Hello, world!</h1>;
 }`} 
@@ -63,7 +64,7 @@ Code blocks are styled with proper syntax highlighting:
 You can also show function components with props:
 
 <CodeSnippet 
-  language="jsx" 
+  language="js" 
   code={`function Greeting({ name }) {
     return <h1>Hello, {name}!</h1>;
 }`} 

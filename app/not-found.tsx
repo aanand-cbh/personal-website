@@ -1,13 +1,11 @@
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
-import { SiteHeader } from "@/components/site-header"
 import { Button } from "@/components/ui/button"
 
 export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col">
-      <SiteHeader />
       <main className="flex-1 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-6xl font-bold">404</h1>

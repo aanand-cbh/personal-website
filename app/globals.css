@@ -161,26 +161,70 @@
 
 /* Code syntax highlighting */
 pre {
-  position: relative;
-  margin: 1em 0;
-  padding: 1em;
-  overflow: auto;
-  background: #1a1a1a;
-  border-radius: 0.5em;
+  overflow-x: auto;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  margin: 1.5rem 0;
+}
+
+pre code {
+  background-color: transparent;
+  padding: 0;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 0.9em;
-  line-height: 1.5;
+  font-size: 0.875em;
+  border-radius: 0.25rem;
+  padding: 0.2rem 0.4rem;
+  background-color: hsl(var(--muted));
 }
 
-/* Language indicator */
-pre::before {
-  content: attr(data-language);
-  position: absolute;
-  top: 0.5em;
-  right: 1em;
-  font-size: 0.75em;
-  color: #666;
+.prose code .line {
+  color: var(--shiki-token-string);
+}
+
+/* sugar-high syntax highlighting */
+code .keyword,
+code .token.keyword {
+  color: #ff0078;
+}
+
+code .token.property,
+code .token.parameter {
+  color: #ff0078;
+}
+
+code .token.function,
+code .token.function-variable {
+  color: #0550ae;
+}
+
+code .token.class-name {
+  color: #0550ae;
+}
+
+code .token.string {
+  color: #86b300;
+}
+
+code .token.comment {
+  color: #757575;
+}
+
+code .token.punctuation {
+  color: #444444;
+}
+
+code .token.operator {
+  color: #444444;
+}
+
+code .token.number {
+  color: #ff9d00;
 }

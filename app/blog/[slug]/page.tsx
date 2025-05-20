@@ -2,13 +2,16 @@ import { ArrowLeft, Calendar, Tag } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { MDXContent } from "@/components/mdx-content"
-import { SiteHeader } from "@/components/site-header"
+import { CustomMDX } from "@/components/mdx"
+import { ShareButtons } from "@/components/share-buttons"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { getPostBySlug, getPostSlugs } from "@/lib/mdx"
+import { formatDate, getBaseUrl } from "@/lib/utils"
+
+// Get base URL for absolute URLs in metadata
+const baseUrl = getBaseUrl();
 
 // Generate static params for all blog posts
 export async function generateStaticParams() {
@@ -25,9 +28,36 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: 'Post Not Found',
     }
   }
+
+  const { title, description, date } = post.frontMatter
+  const ogImage = post.frontMatter.image 
+    ? post.frontMatter.image 
+    : `${baseUrl}/og?title=${encodeURIComponent(title)}`
+
   return {
-    title: post.frontMatter.title,
-    description: post.frontMatter.description,
+    title,
+    description,
+    alternates: {
+      canonical: `${baseUrl}/blog/${post.slug}`,
+    },
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      publishedTime: date,
+      url: `${baseUrl}/blog/${post.slug}`,
+      images: [
+        {
+          url: ogImage,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [ogImage],
+    },
   }
 }
 
@@ -39,38 +69,79 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     notFound()
   }
 
-  return (
-    <div className="flex min-h-screen flex-col">
-      <SiteHeader />
-      <main className="flex-1">
-        <article className="container max-w-3xl px-4 py-12 md:py-24 lg:py-32">
-          <Button asChild variant="ghost" className="mb-8 -ml-4 gap-1 group">
-            <Link href="/blog">
-              <ArrowLeft className="h-4 w-4 mr-2 group-hover:translate-x-[-2px] transition-transform" />
-              Back to Blog
-            </Link>
-          </Button>
+  // For JSON-LD structured data
+  const postImage = post.frontMatter.image
+    ? `${baseUrl}${post.frontMatter.image}`
+    : `${baseUrl}/og?title=${encodeURIComponent(post.frontMatter.title)}`
 
-          <Card className="overflow-hidden border-none shadow-none">
-            <CardContent className="p-0">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
-                  {post.frontMatter.title}
-                </h1>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Calendar className="h-4 w-4" />
-                  <span>
-                    {new Date(post.frontMatter.date).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </span>
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.frontMatter.title,
+    datePublished: post.frontMatter.date,
+    dateModified: post.frontMatter.date,
+    description: post.frontMatter.description,
+    image: postImage,
+    url: `${baseUrl}/blog/${post.slug}`,
+    author: {
+      '@type': 'Person',
+      name: 'Kaivlya',
+      url: baseUrl,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Kaivlya',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${baseUrl}/icons/icon.svg`,
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${baseUrl}/blog/${post.slug}`,
+    },
+    keywords: post.frontMatter.tags || [],
+    articleSection: 'Blog',
+    inLanguage: 'en-US',
+  }
+
+  return (
+    <>
+      {/* JSON-LD structured data for SEO */}
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd),
+        }}
+      />
+
+      <article className="container max-w-3xl py-12">
+        <Button asChild variant="ghost" className="mb-8 -ml-4 gap-1 group">
+          <Link href="/blog">
+            <ArrowLeft className="h-4 w-4 mr-2 group-hover:translate-x-[-2px] transition-transform" />
+            Back to Blog
+          </Link>
+        </Button>
+
+        <div className="space-y-8">
+          <div className="space-y-4">
+            <h1 className="text-3xl font-bold tracking-tighter">
+              {post.frontMatter.title}
+            </h1>
+            
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <Calendar className="h-4 w-4" />
+                <span>{formatDate(post.frontMatter.date)}</span>
+              </div>
+              <span>•</span>
+              <span>{post.frontMatter.readTime}</span>
+              
+              {post.frontMatter.tags && Array.isArray(post.frontMatter.tags) && post.frontMatter.tags.length > 0 && (
+                <>
                   <span>•</span>
-                  <span>{post.frontMatter.readTime}</span>
-                </div>
-                {post.frontMatter.tags && post.frontMatter.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-4">
+                  <div className="flex flex-wrap gap-2">
                     {post.frontMatter.tags.map((tag: string) => (
                       <Badge key={tag} variant="secondary" className="flex items-center gap-1">
                         <Tag className="h-3 w-3" />
@@ -78,34 +149,32 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                       </Badge>
                     ))}
                   </div>
-                )}
-              </div>
+                </>
+              )}
+            </div>
+            
+            {post.frontMatter.description && (
+              <p className="text-muted-foreground text-lg">
+                {post.frontMatter.description}
+              </p>
+            )}
+            
+            {/* Social Sharing Buttons */}
+            <div className="flex flex-col gap-2 pt-4">
+              <h4 className="text-sm font-medium text-muted-foreground">Share this post</h4>
+              <ShareButtons 
+                url={`${baseUrl}/blog/${post.slug}`}
+                title={post.frontMatter.title}
+                description={post.frontMatter.description}
+              />
+            </div>
+          </div>
 
-              <Separator className="my-8" />
+          <Separator />
 
-              <MDXContent source={post.mdxSource} />
-            </CardContent>
-          </Card>
-        </article>
-      </main>
-      <footer className="w-full border-t bg-background py-6">
-        <div className="container flex flex-col items-center justify-center gap-4 px-4 md:px-6 md:flex-row">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} kaivlya.com. All rights reserved.
-          </p>
-          <nav className="flex gap-4">
-            <Link href="/" className="text-sm hover:underline">
-              Home
-            </Link>
-            <Link href="/about" className="text-sm hover:underline">
-              About
-            </Link>
-            <Link href="/blog" className="text-sm hover:underline">
-              Blog
-            </Link>
-          </nav>
+          <CustomMDX source={post.content} />
         </div>
-      </footer>
-    </div>
+      </article>
+    </>
   )
 }

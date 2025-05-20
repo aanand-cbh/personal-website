@@ -1,0 +1,13 @@
+{
+  "cSpell.words": [
+    "Kaivlya",
+    "kaivlya"
+  ],
+  "cSpell.ignorePaths": [
+    "node_modules",
+    ".git",
+    ".next",
+    "package-lock.json",
+    "pnpm-lock.yaml"
+  ]
+} 

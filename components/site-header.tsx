@@ -3,6 +3,7 @@
 import { Menu } from "lucide-react"
 import Link from "next/link"
 
+import { Breadcrumbs } from "@/components/breadcrumbs"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
@@ -12,10 +13,10 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex gap-6 md:gap-10">
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="font-bold">kaivlya.com</span>
-          </Link>
-          <nav className="hidden gap-6 md:flex">
+          {/* <Link href="/" className="flex items-center space-x-2">
+            <span className="font-bold">{ getBaseUrl() }</span>
+          </Link> */}
+          {/* <nav className="hidden gap-6 md:flex">
             <Link
               href="/"
               className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground"
@@ -34,7 +35,8 @@ export function SiteHeader() {
             >
               Blog
             </Link>
-          </nav>
+          </nav> */}
+        <Breadcrumbs />
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />

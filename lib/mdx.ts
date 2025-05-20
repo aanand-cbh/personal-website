@@ -1,11 +1,6 @@
 import fs from "fs"
 import matter from "gray-matter"
-import { serialize } from 'next-mdx-remote/serialize'
 import path from "path"
-import remarkGfm from 'remark-gfm'
-
-// Define the directory where blog posts are stored
-const postsDirectory = path.join(process.cwd(), "content/blog")
 
 // Define the Post type
 export type Post = {
@@ -19,8 +14,10 @@ export type Post = {
     [key: string]: any
   }
   content: string
-  mdxSource: any
 }
+
+// Define the directory where blog posts are stored
+const postsDirectory = path.join(process.cwd(), "content/blog")
 
 // Get all post slugs
 export function getPostSlugs(): string[] {
@@ -49,29 +46,39 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
 
     const fileContents = fs.readFileSync(filePath, "utf8")
     const { data, content } = matter(fileContents)
-    
-    // Serialize the MDX content
-    const mdxSource = await serialize(content, {
-      parseFrontmatter: true,
-      mdxOptions: {
-        development: process.env.NODE_ENV === 'development',
-        format: 'mdx',
-        remarkPlugins: [remarkGfm],
-        rehypePlugins: [],
-      },
-    })
+
+    // Calculate read time if not provided
+    if (!data.readTime) {
+      data.readTime = calculateReadTime(content)
+    }
+
+    // Ensure tags is always an array
+    if (data.tags && !Array.isArray(data.tags)) {
+      if (typeof data.tags === 'string') {
+        // Parse YAML array format or comma-separated string
+        if (data.tags.startsWith('[') && data.tags.endsWith(']')) {
+          data.tags = data.tags.slice(1, -1).split(',').map((tag: string) => tag.trim())
+        } else {
+          data.tags = data.tags.split(',').map((tag: string) => tag.trim())
+        }
+      } else {
+        data.tags = []
+      }
+    }
+
+    const frontMatter = {
+      title: data.title || "Untitled",
+      date: data.date || new Date().toISOString(),
+      description: data.description || "",
+      tags: data.tags || [],
+      readTime: data.readTime,
+      ...data
+    }
 
     return {
       slug,
-      frontMatter: {
-        title: data.title || "Untitled",
-        date: data.date || new Date().toISOString(),
-        description: data.description || "",
-        readTime: data.readTime || calculateReadTime(content),
-        ...data,
-      },
-      content,
-      mdxSource: JSON.parse(JSON.stringify(mdxSource)),
+      frontMatter,
+      content
     }
   } catch (error) {
     console.error(`Error getting post by slug ${slug}:`, error)
@@ -90,13 +97,15 @@ export async function getAllPosts(): Promise<Post[]> {
   )
   const filteredPosts = posts
     .filter((post): post is Post => post !== null)
-    .sort((post1, post2) => new Date(post2.frontMatter.date).getTime() - new Date(post1.frontMatter.date).getTime())
+    .sort((post1, post2) => 
+      new Date(post2.frontMatter.date).getTime() - new Date(post1.frontMatter.date).getTime()
+    )
   return filteredPosts
 }
 
 // Helper function to calculate read time
 function calculateReadTime(content: string): string {
-  const wordsPerMinute = 200
+  const wordsPerMinute = 175
   const wordCount = content.split(/\s+/).length
   const readTime = Math.ceil(wordCount / wordsPerMinute)
   return `${readTime} min read`
