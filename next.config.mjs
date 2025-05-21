@@ -31,7 +31,6 @@ const nextConfig = {
   },
   transpilePackages: ['next-mdx-remote'],
   experimental: {
-    optimizeCss: true,
     optimizePackageImports: [
       '@radix-ui/react-icons',
       'lucide-react',
