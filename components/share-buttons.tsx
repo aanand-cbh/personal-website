@@ -36,7 +36,6 @@ export function ShareButtons({ url, title, description = "" }: ShareButtonsProps
         text: description,
         url
       })
-      console.log('Shared successfully')
     } catch (error) {
       // AbortError is thrown when user cancels the share dialog
       // This is an expected behavior, not an actual error

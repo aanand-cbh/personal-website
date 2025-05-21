@@ -5,6 +5,8 @@ import { Inter } from "next/font/google"
 import type React from "react"
 import "./globals.css"
 
+import { ErrorBoundary } from "@/components/error-boundary"
+import { QueryProvider } from "@/components/providers/query-provider"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { SiteFooter } from "@/components/site-footer"
 import { SiteHeader } from "@/components/site-header"
@@ -12,10 +14,19 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { cn, getBaseUrl } from "@/lib/utils"
 
-const inter = Inter({ subsets: ["latin"] })
+// Load Inter font with preload
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  preload: true,
+  fallback: ["system-ui", "arial"],
+})
 
 // Use the getBaseUrl function to dynamically set the metadata base URL
 const baseUrl = getBaseUrl()
+
+// Route segment config
+export const fetchCache = 'force-cache' // ensure all data fetching is cached
 
 export const metadata: Metadata = {
   title: {
@@ -44,7 +55,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://kaivlya.com",
+    url: baseUrl,
     title: "Kaivlya",
     description: "Personal website and blog of Kaivlya - Technology, Software Development, and Personal Growth",
     siteName: "Kaivlya",
@@ -93,29 +104,32 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",
           inter.className
         )}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="relative flex min-h-screen flex-col">
-            <SiteHeader />
-            <main className="flex-1">{children}</main>
-            <SiteFooter />
-          </div>
-          <Toaster />
-          <Analytics />
-          <SpeedInsights />
-          <ScrollToTop />
-        </ThemeProvider>
+        <ErrorBoundary>
+          <QueryProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <div className="relative flex min-h-screen flex-col">
+                <SiteHeader />
+                <main className="flex-1">{children}</main>
+                <SiteFooter />
+              </div>
+              <Toaster />
+              <Analytics />
+              <SpeedInsights />
+              <ScrollToTop />
+            </ThemeProvider>
+          </QueryProvider>
+        </ErrorBoundary>
       </body>
     </html>
   )

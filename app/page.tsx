@@ -82,7 +82,7 @@ export default function HomePage() {
                     A curated collection of useful resources and personal thoughts
                   </p>
                 </div>
-                <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                <div className="flex flex-row gap-4">
                   <Button asChild>
                     <Link href="/blog">
                       Read My Blog

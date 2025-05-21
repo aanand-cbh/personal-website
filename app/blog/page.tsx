@@ -47,7 +47,6 @@ export default async function BlogPage({
   const posts = query
     ? (() => {
         try {
-          console.log(`Searching for "${query}"`);
           
           // First check if any posts contain the exact search term as a whole word
           const exactMatches = allPosts.filter(post => {
@@ -74,7 +73,6 @@ export default async function BlogPage({
           
           // If we found exact matches, return only those
           if (exactMatches.length > 0) {
-            console.log(`Found ${exactMatches.length} exact matches for "${query}"`);
             return exactMatches;
           }
           
@@ -104,7 +102,6 @@ export default async function BlogPage({
             });
             
             if (partialMatches.length > 0) {
-              console.log(`Found ${partialMatches.length} partial matches for "${query}"`);
               return partialMatches;
             }
           }
@@ -123,14 +120,7 @@ export default async function BlogPage({
           });
           
           const searchResults = fuse.search(query);
-          
-          // For debugging
-          if (searchResults.length > 0) {
-            console.log('Search scores:', searchResults.map(r => ({ 
-              title: r.item.frontMatter.title, 
-              score: r.score 
-            })));
-          }
+        
           
           // Only return results with a good score (lower is better)
           // Filter out poor matches (high scores)
@@ -138,8 +128,7 @@ export default async function BlogPage({
           const filteredResults = searchResults
             .filter(result => result.score !== undefined && result.score < maxScore)
             .map(result => result.item);
-            
-          console.log(`Found ${filteredResults.length} fuzzy matches for "${query}"`);
+          
           return filteredResults;
         } catch (err) {
           console.error('Error in search processing:', err);
