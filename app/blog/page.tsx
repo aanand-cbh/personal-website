@@ -1,10 +1,11 @@
 import Fuse from "fuse.js";
-import { Calendar, Tag } from "lucide-react";
+import { Calendar, Tag, X } from "lucide-react";
 import Link from "next/link";
 
 import { BlogSearch } from "@/components/blog-search";
 import { RssIcon } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getAllPosts } from "@/lib/mdx";
 import { containsExactWord, containsPartialWord, formatDate, getBaseUrl } from "@/lib/utils";
@@ -37,19 +38,61 @@ export const metadata = {
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ q?: string }>;
+  searchParams?: Promise<{ q?: string; tags?: string }>;
 }) {
-  const { q } = await searchParams || {};
+  const { q, tags } = await searchParams || {};
   const query = q || "";
+  const selectedTags = tags ? tags.split(",") : [];
   const allPosts = await getAllPosts();
   
-  // Filter posts based on search query
-  const posts = query
-    ? (() => {
-        try {
-          
-          // First check if any posts contain the exact search term as a whole word
-          const exactMatches = allPosts.filter(post => {
+  // Filter posts based on search query and tags
+  const posts = (() => {
+    let filteredPosts = allPosts;
+
+    // Filter by tags if any are selected
+    if (selectedTags.length > 0) {
+      filteredPosts = filteredPosts.filter(post => 
+        selectedTags.every(tag => 
+          Array.isArray(post.frontMatter.tags) && 
+          post.frontMatter.tags.includes(tag)
+        )
+      );
+    }
+
+    // Apply search query filter if present
+    if (query) {
+      try {
+        // First check if any posts contain the exact search term as a whole word
+        const exactMatches = filteredPosts.filter(post => {
+          try {
+            const content = post.content || '';
+            const title = post.frontMatter.title || '';
+            const description = post.frontMatter.description || '';
+            const tags = Array.isArray(post.frontMatter.tags) 
+              ? post.frontMatter.tags.join(' ') 
+              : '';
+              
+            // Check if the search term appears as a whole word
+            return (
+              containsExactWord(content, query) || 
+              containsExactWord(title, query) ||
+              containsExactWord(description, query) ||
+              containsExactWord(tags, query)
+            );
+          } catch (err) {
+            console.error('Error checking exact match for post:', err);
+            return false;
+          }
+        });
+        
+        // If we found exact matches, return only those
+        if (exactMatches.length > 0) {
+          return exactMatches;
+        }
+        
+        // Check for partial word matches for queries with 3+ characters
+        if (query.length >= 3) {
+          const partialMatches = filteredPosts.filter(post => {
             try {
               const content = post.content || '';
               const title = post.frontMatter.title || '';
@@ -58,84 +101,54 @@ export default async function BlogPage({
                 ? post.frontMatter.tags.join(' ') 
                 : '';
                 
-              // Check if the search term appears as a whole word
+              // Check if the search term appears as a partial word
               return (
-                containsExactWord(content, query) || 
-                containsExactWord(title, query) ||
-                containsExactWord(description, query) ||
-                containsExactWord(tags, query)
+                containsPartialWord(content, query) || 
+                containsPartialWord(title, query) ||
+                containsPartialWord(description, query) ||
+                containsPartialWord(tags, query)
               );
             } catch (err) {
-              console.error('Error checking exact match for post:', err);
+              console.error('Error checking partial match for post:', err);
               return false;
             }
           });
           
-          // If we found exact matches, return only those
-          if (exactMatches.length > 0) {
-            return exactMatches;
+          if (partialMatches.length > 0) {
+            return partialMatches;
           }
-          
-          // Check for partial word matches for queries with 3+ characters
-          // This will catch searches like "documentat" for "documentation"
-          if (query.length >= 3) {
-            const partialMatches = allPosts.filter(post => {
-              try {
-                const content = post.content || '';
-                const title = post.frontMatter.title || '';
-                const description = post.frontMatter.description || '';
-                const tags = Array.isArray(post.frontMatter.tags) 
-                  ? post.frontMatter.tags.join(' ') 
-                  : '';
-                  
-                // Check if the search term appears as a partial word
-                return (
-                  containsPartialWord(content, query) || 
-                  containsPartialWord(title, query) ||
-                  containsPartialWord(description, query) ||
-                  containsPartialWord(tags, query)
-                );
-              } catch (err) {
-                console.error('Error checking partial match for post:', err);
-                return false;
-              }
-            });
-            
-            if (partialMatches.length > 0) {
-              return partialMatches;
-            }
-          }
-          
-          // If no exact or partial matches, use fuzzy search
-          const fuse = new Fuse(allPosts, {
-            keys: [
-              'frontMatter.title',
-              'frontMatter.description',
-              'frontMatter.tags',
-              'content'
-            ],
-            threshold: 0.4,
-            ignoreLocation: true,
-            includeScore: true
-          });
-          
-          const searchResults = fuse.search(query);
-        
-          
-          // Only return results with a good score (lower is better)
-          // Filter out poor matches (high scores)
-          const maxScore = 0.65; // Slightly more lenient maximum score
-          const filteredResults = searchResults
-            .filter(result => result.score !== undefined && result.score < maxScore)
-            .map(result => result.item);
-          
-          return filteredResults;
-        } catch (err) {
-          console.error('Error in search processing:', err);
-          return allPosts;
         }
-      })()
-    : allPosts;
+        
+        // If no exact or partial matches, use fuzzy search
+        const fuse = new Fuse(filteredPosts, {
+          keys: [
+            'frontMatter.title',
+            'frontMatter.description',
+            'frontMatter.tags',
+            'content'
+          ],
+          threshold: 0.4,
+          ignoreLocation: true,
+          includeScore: true
+        });
+        
+        const searchResults = fuse.search(query);
+      
+        // Only return results with a good score (lower is better)
+        const maxScore = 0.65;
+        const filteredResults = searchResults
+          .filter(result => result.score !== undefined && result.score < maxScore)
+          .map(result => result.item);
+        
+        return filteredResults;
+      } catch (err) {
+        console.error('Error in search processing:', err);
+        return filteredPosts;
+      }
+    }
+
+    return filteredPosts;
+  })();
 
   // Create JSON-LD structured data for the blog list
   const jsonLd = {
@@ -156,6 +169,15 @@ export default async function BlogPage({
       },
     })),
   }
+
+  // Get all unique tags from posts
+  const allTags = Array.from(
+    new Set(
+      allPosts
+        .flatMap(post => post.frontMatter.tags || [])
+        .filter(Boolean)
+    )
+  ).sort();
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -189,6 +211,40 @@ export default async function BlogPage({
           
           {/* Search Bar */}
           <BlogSearch />
+
+          {/* Active Tags */}
+          {selectedTags.length > 0 && (
+            <div className="mb-4 flex flex-wrap gap-2">
+              {selectedTags.map(tag => (
+                <Badge
+                  key={tag}
+                  variant="secondary"
+                  className="flex items-center gap-1"
+                >
+                  <Tag className="h-3 w-3" />
+                  {tag}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-4 w-4 p-0 hover:bg-transparent"
+                    asChild
+                  >
+                    <Link
+                      href={{
+                        pathname: "/blog",
+                        query: {
+                          ...(query ? { q: query } : {}),
+                          tags: selectedTags.filter(t => t !== tag).join(",")
+                        }
+                      }}
+                    >
+                      <X className="h-3 w-3" />
+                    </Link>
+                  </Button>
+                </Badge>
+              ))}
+            </div>
+          )}
           
           {query && (
             <div className="mb-6 mt-2 text-sm text-muted-foreground">
@@ -249,11 +305,26 @@ export default async function BlogPage({
                             {post.frontMatter.tags.map((tag: string) => (
                               <Badge
                                 key={tag + Math.random().toString(36).substring(2, 6)}
-                                variant="secondary"
-                                className="flex items-center gap-1"
+                                variant={selectedTags.includes(tag) ? "default" : "secondary"}
+                                className={`flex items-center gap-1 cursor-pointer transition-colors ${
+                                  selectedTags.includes(tag)
+                                    ? "hover:bg-primary/90"
+                                    : "hover:bg-secondary/80"
+                                }`}
                               >
-                                <Tag className="h-3 w-3" />
-                                {tag}
+                                <Link
+                                  href={{
+                                    pathname: "/blog",
+                                    query: {
+                                      ...(query ? { q: query } : {}),
+                                      tags: [...new Set([...selectedTags, tag])].join(",")
+                                    }
+                                  }}
+                                  className="flex items-center gap-1"
+                                >
+                                  <Tag className="h-3 w-3" />
+                                  {tag}
+                                </Link>
                               </Badge>
                             ))}
                           </div>
@@ -266,24 +337,7 @@ export default async function BlogPage({
                 </div>
               ))
             ) : (
-              <div className="text-center py-12">
-                {query ? (
-                  <>
-                    <h3 className="text-xl font-medium">No matching posts found</h3>
-                    <p className="text-muted-foreground mt-2">
-                      Try a different search term or browse all posts.
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <h3 className="text-xl font-medium">No blog posts found</h3>
-                    <p className="text-muted-foreground mt-2">
-                      Start writing by adding Markdown files to the content/blog
-                      directory.
-                    </p>
-                  </>
-                )}
-              </div>
+              <p className="text-muted-foreground">No posts found.</p>
             )}
           </div>
         </section>
