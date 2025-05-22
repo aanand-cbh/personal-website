@@ -3962,6 +3962,11 @@
           "description": "Various streaming platforms and services",
           "links": [
             {
+              "name": "Browsec",
+              "description": "Browsec - Chrome or Edge extension for unblocking websites due to geo-restrictions",
+              "url": "https://browsec.com/en/"
+            },
+            {
               "name": "Stremio",
               "description": "Open-source streaming platform that aggregates video content from multiple sources, with a user-friendly interface and customizable add-ons",
               "url": "https://www.stremio.com/"
@@ -4017,6 +4022,11 @@
           "title": "Sports",
           "description": "Live sports streaming and updates",
           "links": [
+            {
+              "name": "Browsec",
+              "description": "Browsec - Chrome or Edge extension for unblocking websites due to geo-restrictions",
+              "url": "https://browsec.com/en/"
+            },
             {
               "name": "Live Cricket",
               "description": "Free live streaming platform for cricket matches with multiple quality options and real-time score updates",
