@@ -1,0 +1,115 @@
+{
+  "categories": [
+    {
+      "slug": "development",
+      "title": "Development",
+      "description": "Essential tools, documentation, and communities for software developers.",
+      "subcategories": [
+        {
+          "title": "Version Control",
+          "description": "Tools and resources for version control",
+          "links": [
+            { "name": "GitHub", "description": "Code hosting platform", "url": "https://github.com" },
+            { "name": "GitLab", "description": "DevOps platform", "url": "https://gitlab.com" },
+            { "name": "Bitbucket", "description": "Git code hosting", "url": "https://bitbucket.org" }
+          ]
+        },
+        {
+          "title": "Documentation",
+          "description": "Technical documentation and references",
+          "links": [
+            { "name": "MDN Web Docs", "description": "Web development documentation", "url": "https://developer.mozilla.org" },
+            { "name": "DevDocs", "description": "API documentation browser", "url": "https://devdocs.io" },
+            { "name": "Read the Docs", "description": "Documentation hosting", "url": "https://readthedocs.org" }
+          ]
+        },
+        {
+          "title": "Community",
+          "description": "Developer communities and forums",
+          "links": [
+            { "name": "Stack Overflow", "description": "Developer Q&A community", "url": "https://stackoverflow.com" },
+            { "name": "Dev.to", "description": "Developer community platform", "url": "https://dev.to" },
+            { "name": "Hashnode", "description": "Developer blogging platform", "url": "https://hashnode.com" }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "design",
+      "title": "Design",
+      "description": "Tools, inspiration, and assets for UI/UX designers.",
+      "subcategories": [
+        {
+          "title": "Design Tools",
+          "description": "Essential tools for UI/UX design",
+          "links": [
+            { "name": "Figma", "description": "Collaborative design tool", "url": "https://figma.com" },
+            { "name": "Adobe XD", "description": "UI/UX design software", "url": "https://adobe.com/products/xd" },
+            { "name": "Sketch", "description": "Digital design for Mac", "url": "https://sketch.com" }
+          ]
+        },
+        {
+          "title": "Inspiration",
+          "description": "Sources for design inspiration",
+          "links": [
+            { "name": "Dribbble", "description": "Design inspiration", "url": "https://dribbble.com" },
+            { "name": "Behance", "description": "Creative portfolio platform", "url": "https://behance.net" },
+            { "name": "Awwwards", "description": "Website design awards", "url": "https://awwwards.com" }
+          ]
+        },
+        {
+          "title": "Resources",
+          "description": "Design assets and resources",
+          "links": [
+            { "name": "Unsplash", "description": "Free high-quality images", "url": "https://unsplash.com" },
+            { "name": "Icons8", "description": "Icons and illustrations", "url": "https://icons8.com" },
+            { "name": "Font Awesome", "description": "Icon toolkit", "url": "https://fontawesome.com" }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "learning",
+      "title": "Learning",
+      "description": "Educational platforms and resources for continuous learning.",
+      "subcategories": [
+        {
+          "title": "Online Courses",
+          "description": "Platforms for structured learning",
+          "links": [
+            { "name": "Coursera", "description": "University-level courses", "url": "https://coursera.org" },
+            { "name": "Udemy", "description": "Practical skill courses", "url": "https://udemy.com" },
+            { "name": "edX", "description": "University courses online", "url": "https://edx.org" }
+          ]
+        },
+        {
+          "title": "Free Learning",
+          "description": "Free educational resources",
+          "links": [
+            { "name": "Khan Academy", "description": "Free education platform", "url": "https://khanacademy.org" },
+            { "name": "freeCodeCamp", "description": "Learn to code for free", "url": "https://freecodecamp.org" },
+            { "name": "MIT OpenCourseWare", "description": "Free MIT course materials", "url": "https://ocw.mit.edu" },
+            { "name": "Coursera", "description": "University-level courses", "url": "https://coursera.org" },
+            { "name": "edX", "description": "University courses online", "url": "https://edx.org" }
+          ]
+        },
+        {
+          "title": "Interactive Learning",
+          "description": "Hands-on learning platforms",
+          "links": [
+            { "name": "Codecademy", "description": "Interactive coding lessons", "url": "https://codecademy.com" },
+            { "name": "LeetCode", "description": "Coding practice platform", "url": "https://leetcode.com" },
+            { "name": "HackerRank", "description": "Programming challenges", "url": "https://hackerrank.com" }
+          ]
+        },
+        {
+          "title": "Books",
+          "description": "Books for learning",
+          "links": [
+            { "name": "The Pragmatic Programmer", "description": "A guide to programming in the real world", "url": "https://pragprog.com/book/tpp/the-pragmatic-programmer" }
+          ]
+        }
+      ]
+    }
+  ]
+} 
