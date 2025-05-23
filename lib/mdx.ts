@@ -1,6 +1,8 @@
 import fs from "fs"
 import matter from "gray-matter"
+import { serialize } from 'next-mdx-remote/serialize'
 import path from "path"
+import remarkGfm from 'remark-gfm'
 
 // Define the Post type
 export type Post = {
@@ -11,9 +13,10 @@ export type Post = {
     description: string
     readTime?: string
     tags?: string[]
+    clientSide?: boolean
     [key: string]: any
   }
-  content: string
+  content: any // Changed from string to any to accommodate serialized content
 }
 
 // Define the directory where blog posts are stored
@@ -72,13 +75,23 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       description: data.description || "",
       tags: data.tags || [],
       readTime: data.readTime,
+      clientSide: data.clientSide || false,
       ...data
     }
+
+    // Serialize the MDX content
+    const serializedContent = await serialize(content, {
+      mdxOptions: {
+        remarkPlugins: [remarkGfm],
+        rehypePlugins: [],
+      },
+      parseFrontmatter: false,
+    })
 
     return {
       slug,
       frontMatter,
-      content
+      content: serializedContent
     }
   } catch (error) {
     console.error(`Error getting post by slug ${slug}:`, error)

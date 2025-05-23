@@ -5,6 +5,7 @@ const withMDX = createMDX({
   options: {
     remarkPlugins: [remarkGfm],
     rehypePlugins: [],
+    providerImportSource: "@mdx-js/react",
   },
 })
 
@@ -29,7 +30,7 @@ const nextConfig = {
       },
     ],
   },
-  transpilePackages: ['next-mdx-remote'],
+  transpilePackages: ['next-mdx-remote', '@mdx-js/react'],
   experimental: {
     optimizePackageImports: [
       '@radix-ui/react-icons',

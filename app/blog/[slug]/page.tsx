@@ -2,7 +2,7 @@ import { ArrowLeft, Calendar, Tag } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { CustomMDX } from "@/components/mdx"
+import { MDXWrapper } from "@/components/mdx-wrapper"
 import { ShareButtons } from "@/components/share-buttons"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -172,7 +172,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
           <Separator />
 
-          <CustomMDX source={post.content} />
+          <MDXWrapper 
+            source={post.content} 
+            clientSide={post.frontMatter.clientSide === true}
+          />
         </div>
       </article>
     </>

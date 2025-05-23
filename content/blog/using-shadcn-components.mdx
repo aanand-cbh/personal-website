@@ -70,10 +70,66 @@ You can also show function components with props:
 }`} 
 />
 
+## Static Components Examples
+
+### Alert (Advanced)
+
+<Alert>
+  <AlertTitle>Heads up!</AlertTitle>
+  <AlertDescription>
+    You can add components to your app using the cli.
+  </AlertDescription>
+</Alert>
+
+### Skeleton
+
+<Skeleton className="h-4 w-[250px]" />
+
+## Data Display Components
+
+### Table (Advanced)
+
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Name</TableHead>
+      <TableHead>Role</TableHead>
+      <TableHead>Department</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell>John Doe</TableCell>
+      <TableCell>Developer</TableCell>
+      <TableCell>Engineering</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Jane Smith</TableCell>
+      <TableCell>Designer</TableCell>
+      <TableCell>Design</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+
+### Card (Advanced)
+
+<Card>
+  <CardHeader>
+    <CardTitle>Card Title</CardTitle>
+    <CardDescription>Card Description</CardDescription>
+  </CardHeader>
+  <CardContent>
+    <p>Card Content</p>
+  </CardContent>
+  <CardFooter>
+    <p>Card Footer</p>
+  </CardFooter>
+</Card>
+
 ## Benefits of Using shadcn/ui in MDX
 
 1. **Consistent Design**: Your blog posts match the rest of your website
-2. **Interactive Components**: Add interactive elements to your content
+2. **Static Components**: Add styled elements to your content
 3. **Customizable**: Easily customize the appearance of your components
 4. **Accessibility**: shadcn/ui components are built with accessibility in mind
 

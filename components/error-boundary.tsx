@@ -35,18 +35,16 @@ function ErrorFallback({ error, resetErrorBoundary }: { error: Error; resetError
 
 interface ErrorBoundaryProps {
   children: React.ReactNode
-  fallback?: React.ReactNode
   onReset?: () => void
 }
 
 export function ErrorBoundary({ 
   children, 
-  fallback,
   onReset 
 }: ErrorBoundaryProps) {
   return (
     <ReactErrorBoundary
-      FallbackComponent={fallback ? () => <>{fallback}</> : ErrorFallback}
+      FallbackComponent={ErrorFallback}
       onReset={() => {
         if (onReset) {
           onReset()
