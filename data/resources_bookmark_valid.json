@@ -4057,6 +4057,57 @@
       "description": "Resources and tools related to utilities",
       "subcategories": [
         {
+          "title": "Cloud Storage",
+          "description": "Resources and tools on cloud storage",
+          "links": [
+            {
+              "name": "Mega",
+              "description": "Mega - Upto 50 GB of free storage",
+              "url": "https://mega.nz/login"
+            },
+            {
+              "name": "One Drive",
+              "description": "One Drive - Upto 15GB of free storage",
+              "url": "https://onedrive.live.com"
+            },
+            {
+              "name": "Google Drive",
+              "description": "Google Drive - Upto 15GB of free storage",
+              "url": "https://drive.google.com"
+            },
+            {
+              "name": "Dropbox",
+              "description": "Dropbox - Upto 2GB of free storage",
+              "url": "https://www.dropbox.com"
+            },
+            {
+              "name": "pCloud",
+              "description": "pCloud - Upto 10GB of free storage",
+              "url": "https://www.pcloud.com/"
+            },
+            {
+              "name": "Digiboxx",
+              "description": "Digiboxx - Upto 20GB of free storage",
+              "url": "https://digiboxx.com/"
+            },
+            {
+              "name": "Box",
+              "description": "Box - Upto 10GB of free storage",
+              "url": "https://www.box.com/login"
+            },
+            {
+              "name": "Free File Sync",
+              "description": "Free File Sync - Sync files across devices",
+              "url": "https://freefilesync.org/"
+            },
+            {
+              "name": "19 Free Folder And File Synchronization For External Hard Drive Backup",
+              "description": "19 Free Folder And File Synchronization For External Hard Drive Backup",
+              "url": "https://www.geckoandfly.com/21418/file-synchronization-backup/"
+            }
+          ]
+        },
+        {
           "title": "Yoga",
           "description": "Resources and tools on yoga",
           "links": [

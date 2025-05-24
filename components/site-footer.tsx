@@ -17,6 +17,9 @@ export function SiteFooter() {
           <Link href="/blog" className="text-sm hover:underline">
             Blog
           </Link>
+          <Link href="/resources" className="text-sm hover:underline">
+            Resources
+          </Link>
         </nav>
       </div>
     </footer>
