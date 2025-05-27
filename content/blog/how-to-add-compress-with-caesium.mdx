@@ -1,0 +1,148 @@
+---
+title: How to Add a "Compress with Caesium" Right-Click Menu Item on macOS (Using Automator)
+date: 2025-05-27
+description: A guide to adding a "Compress with Caesium" right-click menu item on macOS using Automator
+tags: [macOS, Automator, Image Compression, caesium, Quick Actions, Tutorial]
+---
+
+
+## 🧰 How to Add a "Compress with Caesium" Right-Click Menu Item on macOS (Using Automator)
+
+## 📦 Caesium
+
+Caesium is a macOS app for compressing images. It is a lightweight and efficient image compressor for .jpg, .png, and .bmp formats. One can download the executable from the official page here: https://saerasoft.com/caesium
+
+## 📦 Caesium CLI
+
+Caesium CLI is a command-line tool for compressing images. It is a lightweight and efficient image compressor for .jpg, .png, and .bmp formats.
+
+Whether you're working with hundreds of images or just want a cleaner way to compress photos from Finder, Caesium CLI is a powerful, lightweight solution. This guide walks you through:
+
+- Installing the Caesium command-line tool
+- Moving it to a system-wide directory
+- Creating a right-click context menu item in macOS using Automator
+
+This method works on macOS High Sierra to Monterey (and is generally compatible up to Sonoma).
+
+### 🚀 Step 1: Download the Caesium CLI
+The Caesium CLI tool, called caesiumclt, is a lightweight and efficient image compressor for .jpg, .png, and .bmp formats.
+
+### 📦 Download from the official source
+1. Go to the official Caesium GitHub releases page:
+
+[https://github.com/Lymphatus/caesium-image-compressor/releases](https://github.com/Lymphatus/caesium-image-compressor/releases)
+
+2. Scroll down to the Assets section for the latest release.
+
+3. Download the caesiumclt-macos.zip file.
+
+### 📂 Step 2: Extract and Move `caesiumclt` to a Safe Location
+Once downloaded:
+
+1. Unzip the file (double-click on caesiumclt-macos.zip)
+
+2. You'll see a binary file named caesiumclt
+
+Let's move it to a safe, system-wide location so it can be used in any Terminal script.
+
+### 🔐 Move it to /usr/local/bin
+1. Open Terminal
+
+2. Run the following command (you'll need your admin password):
+
+```bash
+sudo mv ~/Downloads/caesiumclt /usr/local/bin/caesiumclt
+```
+
+3. If it's in another folder, adjust the path accordingly.
+
+4. Make it executable:	
+
+```bash
+sudo chmod +x /usr/local/bin/caesiumclt
+```
+
+### ✅ Test the installation
+1. Run:
+
+```bash
+caesiumclt --help
+```
+
+If you see usage instructions, you're good to go!
+
+### 🧰 Step 3: Create a Context Menu Item Using Automator
+You can now integrate caesiumclt into Finder using Automator Quick Actions.
+
+### 🪄 Create the Quick Action
+1. Open Automator (search Spotlight or go to Applications > Automator)
+
+2. Select New Document → Quick Action
+
+3. Configure the top of the window:
+
+- "Workflow receives current": folders
+
+- In: Finder
+
+### 💡 Add an Shell/Bash script that launches compression
+1. Search for and add "Run Shell Script"
+
+2. Drag it into the workflow
+
+3. Replace the default code with:
+
+```bash
+#!/bin/bash
+
+caesium_cli_path="/usr/local/bin/caesiumclt"
+
+for folder in "$@"; do
+  output_folder="$folder/Compressed"
+  mkdir -p "$output_folder"
+
+  find "$folder" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" \) | while read -r img; do
+    "$caesium_cli_path" -q 80 -o "$output_folder" "$img"
+  done
+
+  open "$output_folder"
+done
+```
+
+### 💾 Save the Quick Action
+1. Go to File > Save
+
+2. Name it: Compress with Caesium
+
+Now, this action will appear when you right-click on a folder in Finder!
+
+### 🧪 Using It
+1. In Finder, right-click any folder containing images
+
+2. Choose Quick Actions > Compress with Caesium
+
+![Caesium macOS Menu Item](/public/blog/caesium-macos-menu-item.png)
+
+A Terminal window will open and show:
+
+- Compression progress for each image
+
+- A message when finished
+
+3. The compressed files in a new Compressed/ subfolder
+
+### 🧹 Cleaning Up or Uninstalling
+To delete the Quick Action:
+
+1. Go to Finder → Press Shift + Command + G
+
+2. Enter: ~/Library/Services
+
+Delete the file: Compress with Caesium.workflow
+
+### ✅ Final Notes
+This method works without needing Xcode or advanced scripting tools.
+
+- You can customize the compression quality (-q) in the script above.
+
+- Works well on Intel and Apple Silicon Macs.
