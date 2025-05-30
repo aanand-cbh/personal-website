@@ -61,6 +61,62 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
+interface SchemaOrgDefinition {
+  type: string;
+  name?: string;
+  description?: string;
+  about?: {
+    type: string;
+    name: string;
+    containedInPlace?: {
+      type: string;
+      name: string;
+      containedInPlace?: {
+        type: string;
+        name: string;
+      };
+    };
+  };
+  audience?: {
+    type: string;
+    audienceType: string;
+  };
+  mainEntity?: {
+    type: string;
+    itemListElement: Array<{
+      type: string;
+      position: number;
+      item: {
+        type: string;
+        name: string;
+      };
+    }>;
+  };
+}
+
+// Helper function to convert type to @type recursively
+function convertTypeToAtType(obj: any): any {
+  if (!obj || typeof obj !== 'object') return obj;
+  
+  const result: any = {};
+  
+  for (const [key, value] of Object.entries(obj)) {
+    if (key === 'type') {
+      result['@type'] = value;
+    } else if (key === 'id') {
+      result['@id'] = value;
+    } else if (Array.isArray(value)) {
+      result[key] = value.map(item => convertTypeToAtType(item));
+    } else if (typeof value === 'object') {
+      result[key] = convertTypeToAtType(value);
+    } else {
+      result[key] = value;
+    }
+  }
+  
+  return result;
+}
+
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params
   const post = await getPostBySlug(resolvedParams.slug)
@@ -74,7 +130,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     ? `${baseUrl}${post.frontMatter.image}`
     : `${baseUrl}/og?title=${encodeURIComponent(post.frontMatter.title)}`
 
-  const jsonLd = {
+  // Default BlogPosting schema
+  const blogPostingSchema = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: post.frontMatter.title,
@@ -105,16 +162,31 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     inLanguage: 'en-US',
   }
 
+  // Process schemas from frontmatter
+  const customSchemas = post.frontMatter.schemas
+    ?.map((schema: SchemaOrgDefinition) => ({
+      '@context': 'https://schema.org',
+      '@type': schema.type,
+      ...convertTypeToAtType(schema),
+      // Remove the type field as it's already used in @type
+      type: undefined
+    })) || []
+
+  // Combine all schemas
+  const schemas = [blogPostingSchema, ...customSchemas]
+
   return (
     <>
-      {/* JSON-LD structured data for SEO */}
-      <script
-        type="application/ld+json"
-        suppressHydrationWarning
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(jsonLd),
-        }}
-      />
+      {/* Schema.org structured data */}
+      {schemas.length > 0 && (
+        <script
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(schemas),
+          }}
+        />
+      )}
 
       <article className="container max-w-3xl py-12">
         <Button asChild variant="ghost" className="mb-8 -ml-4 gap-1 group">
