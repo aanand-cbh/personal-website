@@ -28,6 +28,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { CodeSnippet } from "@/components/ui/code-snippet"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Dialog, DialogContent, DialogDescription as DialogDescriptionPrimitive, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { FloatingNavigationMenu } from "@/components/ui/floating-navigation-menu"
 import { Form, FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Input } from "@/components/ui/input"
@@ -292,6 +293,7 @@ const components = {
   ToastDemo,
   ToastWrapper,
   ToggleDemo,
+  FloatingNavigationMenu,
 }
 
 // Client component for MDX rendering

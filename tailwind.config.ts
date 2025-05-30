@@ -1,5 +1,5 @@
-import type { Config } from "tailwindcss"
 import typography from "@tailwindcss/typography"
+import type { Config } from "tailwindcss"
 
 const config = {
   darkMode: ["class"],
@@ -79,6 +79,19 @@ const config = {
         DEFAULT: {
           css: {
             maxWidth: "100%",
+          },
+        },
+        dark: {
+          css: {
+            '--tw-prose-body': '#e5e7eb', // gray-200
+            '--tw-prose-headings': '#f3f4f6', // gray-100
+            '--tw-prose-bold': '#f3f4f6', // gray-100
+            '--tw-prose-lead': '#d1d5db', // gray-300
+            '--tw-prose-links': '#60a5fa', // blue-400
+            '--tw-prose-codes': '#f472b6', // pink-400
+            '--tw-prose-quotes': '#f3f4f6',
+            '--tw-prose-quote-borders': '#374151', // gray-700
+            '--tw-prose-captions': '#9ca3af', // gray-400
           },
         },
       },

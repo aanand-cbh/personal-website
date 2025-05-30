@@ -16,6 +16,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { CodeBlock } from "@/components/ui/code-block"
 import { CodeSnippet } from "@/components/ui/code-snippet"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { FloatingNavigationMenu } from "@/components/ui/floating-navigation-menu"
 import { Form, FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Input } from "@/components/ui/input"
@@ -299,6 +300,9 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     AccordionItem: ({ className, ...props }) => <AccordionItem className={cn("", className)} {...props} />,
     AccordionTrigger: ({ className, ...props }) => <AccordionTrigger className={cn("", className)} {...props} />,
     AccordionContent: ({ className, ...props }) => <AccordionContent className={cn("", className)} {...props} />,
+    FloatingNavigationMenu: ({ className, ...props }) => (
+      <FloatingNavigationMenu className={cn("", className)} {...props} />
+    ),
     ...components,
   }
 }

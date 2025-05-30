@@ -138,71 +138,61 @@ schemas:
           name: "Places to visit near Hyderabad | Best Tourist Destinations & Weekend Getaways"
 ---
 
-<article className="prose prose-lg max-w-none">
-  <div className="flex justify-end">
-    <NavigationMenu>
-      <NavigationMenuList className="!list-none">
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Places</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <div className="grid gap-3 p-4 w-[400px]">
-                <NavigationMenuLink href="#golconda">Golconda Fort</NavigationMenuLink>
-                <NavigationMenuLink href="#ramoji">Ramoji Film City</NavigationMenuLink>
-                <NavigationMenuLink href="#bhongir">Bhongir Fort</NavigationMenuLink>
-                <NavigationMenuLink href="#pochampally">Pochampally</NavigationMenuLink>
-                <NavigationMenuLink href="#yadagirigutta">Yadagirigutta Temple</NavigationMenuLink>
-                <NavigationMenuLink href="#rachakonda">Rachakonda Fort</NavigationMenuLink>
-                <NavigationMenuLink href="#ananthagiri">Ananthagiri Hills</NavigationMenuLink>
-                <NavigationMenuLink href="#medak">Medak</NavigationMenuLink>
-                <NavigationMenuLink href="#bidar">Bidar</NavigationMenuLink>
-                <NavigationMenuLink href="#pillalamarri">Pillalamarri</NavigationMenuLink>
-                <NavigationMenuLink href="#warangal">Warangal</NavigationMenuLink>
-                <NavigationMenuLink href="#nagarjuna">Nagarjuna Sagar</NavigationMenuLink>
-                <NavigationMenuLink href="#basara">Basara</NavigationMenuLink>
-                <NavigationMenuLink href="#alampur">Alampur</NavigationMenuLink>
-                <NavigationMenuLink href="#srisailam">Srisailam</NavigationMenuLink>
-                <NavigationMenuLink href="#kuntala">Kuntala Waterfalls</NavigationMenuLink>
-                <NavigationMenuLink href="#orvakallu">Orvakallu Rock Gardens</NavigationMenuLink>
-                <NavigationMenuLink href="#belum">Belum Caves</NavigationMenuLink>
-                <NavigationMenuLink href="#gandikota">Gandikota</NavigationMenuLink>
-              </div>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
+<article className="prose prose-lg max-w-none dark:prose-invert dark:prose-dark">
+  <FloatingNavigationMenu
+    menuItems={[
+      {
+        title: "Places",
+        items: [
+          { title: "Golconda Fort (11 km)", href: "#golconda" },
+          { title: "Ramoji Film City (25 km)", href: "#ramoji" },
+          { title: "Bhongir Fort (45 km)", href: "#bhongir" },
+          { title: "Pochampally (50 km)", href: "#pochampally" },
+          { title: "Yadagirigutta Temple (55 km)", href: "#yadagirigutta" },
+          { title: "Rachakonda Fort (60 km)", href: "#rachakonda" },
+          { title: "Ananthagiri Hills (80 km)", href: "#ananthagiri" },
+          { title: "Medak (100 km)", href: "#medak" },
+          { title: "Bidar (140 km)", href: "#bidar" },
+          { title: "Pillalamarri (150 km)", href: "#pillalamarri" },
+          { title: "Warangal (150 km)", href: "#warangal" },
+          { title: "Nagarjuna Sagar (150 km)", href: "#nagarjuna" },
+          { title: "Basara (200 km)", href: "#basara" },
+          { title: "Alampur (220 km)", href: "#alampur" },
+          { title: "Srisailam (230 km)", href: "#srisailam" },
+          { title: "Kuntala Waterfalls (260 km)", href: "#kuntala" },
+          { title: "Orvakallu Rock Gardens (300 km)", href: "#orvakallu" },
+          { title: "Belum Caves (350 km)", href: "#belum" },
+          { title: "Gandikota (350 km)", href: "#gandikota" },
+        ],
+      },
+      {
+        title: "Recommended Itineraries",
+        items: [
+          { title: "Weekend Getaways", href: "#weekend-getaways" },
+          { title: "Extended Trips", href: "#extended-trips" },
+        ],
+      },
+      {
+        title: "Travel Tips",
+        items: [
+          { title: "Best Time to Visit", href: "#best-time" },
+          { title: "Transportation", href: "#transportation" },
+          { title: "Interstate Travel Rules", href: "#interstate-travel" },
+          { title: "Packing Essentials", href: "#packing" },
+          { title: "Booking Tips", href: "#booking" },
+          { title: "Local Insights", href: "#local-insights" },
+          { title: "Safety Tips", href: "#safety" },
+        ],
+      },
+    ]}
+  />
 
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Recommended Itineraries</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <div className="grid gap-3 p-4 w-[400px]">
-                <NavigationMenuLink href="#weekend-getaways">Weekend Getaways</NavigationMenuLink>
-                <NavigationMenuLink href="#extended-trips">Extended Trips</NavigationMenuLink>
-            </div>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-
-        <NavigationMenuItem>
-          <NavigationMenuTrigger>Travel Tips</NavigationMenuTrigger>
-          <NavigationMenuContent>
-            <div className="grid gap-3 p-4 w-[400px]">
-                <NavigationMenuLink href="#best-time">Best Time to Visit</NavigationMenuLink>
-                <NavigationMenuLink href="#transportation">Transportation</NavigationMenuLink>
-                <NavigationMenuLink href="#interstate-travel">Interstate Travel Rules</NavigationMenuLink>
-                <NavigationMenuLink href="#packing">Packing Essentials</NavigationMenuLink>
-                <NavigationMenuLink href="#booking">Booking Tips</NavigationMenuLink>
-                <NavigationMenuLink href="#local-insights">Local Insights</NavigationMenuLink>
-                <NavigationMenuLink href="#safety">Safety Tips</NavigationMenuLink>
-            </div>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-      </NavigationMenuList>
-    </NavigationMenu>
-  </div>
-
-  <section>
+  <section id="places">
     <h2>Places</h2>
 
-    <p className="lead">
+    <div className="lead">
       Hyderabad, the City of Pearls, is surrounded by numerous fascinating destinations perfect for weekend getaways and day trips. From ancient forts and temples to natural wonders and wildlife sanctuaries, discover the best places to visit near Hyderabad, sorted by travel time for easy planning.
-    </p>
+    </div>
 
     <Accordion type="single" collapsible defaultValue={typeof window !== 'undefined' ? window.location.hash.slice(1) : undefined}>
       <div className="pl-4">
@@ -856,7 +846,7 @@ schemas:
     </Accordion>
   </section>
 
-  <section>
+  <section id="recommended-itineraries">
     <h2>Recommended Itineraries</h2>
     <p className="lead">
       Plan your perfect getaway with our curated itineraries, combining nearby attractions for an unforgettable experience. Whether you're looking for a quick day trip or an extended adventure, we've got you covered.
@@ -890,7 +880,7 @@ schemas:
     </Accordion>
   </section>
 
-  <section>
+  <section id="travel-tips">
     <h2>Travel Tips</h2>
     <p className="lead">
       Make the most of your trip with our comprehensive travel guide. From the best time to visit to essential travel information, we've got everything you need to know for a smooth and enjoyable journey.
