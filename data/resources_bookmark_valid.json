@@ -4052,6 +4052,49 @@
       ]
     },
     {
+      "slug": "photography",
+      "title": "Photography",
+      "description": "Resources and tools related to photography",
+      "subcategories": [
+        {
+          "title": "Photography",
+          "description": "Resources and tools on photography",
+          "links": [
+            {
+              "name": "Darktable",
+              "description": "Darktable - A modern photo editor",
+              "url": "https://www.darktable.org/"
+            },
+            {
+              "name": "RawTherapee",
+              "description": "RawTherapee - A modern photo editor",
+              "url": "https://rawtherapee.com/"
+            },
+            {
+              "name": "Photoscape X",
+              "description": "Everything you need to edit photos",
+              "url": "http://x.photoscape.org/"
+            },
+            {
+              "name": "Caesium",
+              "description": "Compress your pictures up to 90% without visible quality loss",
+              "url": "https://saerasoft.com/caesium"
+            },
+            {
+              "name": "Photomator",
+              "description": "Add macos option to compress images in a folder",
+              "url": "https://www.kaivlya.com/blog/how-to-add-compress-with-caesium"
+            },
+            {
+              "name": "ImageOptim",
+              "description": "Makes images load faster",
+              "url": "https://imageoptim.com/"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "slug": "utilities",
       "title": "Utilities",
       "description": "Resources and tools related to utilities",
