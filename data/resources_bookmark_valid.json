@@ -4057,8 +4057,8 @@
       "description": "Resources and tools related to photography",
       "subcategories": [
         {
-          "title": "Photography",
-          "description": "Resources and tools on photography",
+          "title": "Photo Editing",
+          "description": "Resources and tools on photo editing",
           "links": [
             {
               "name": "Darktable",

@@ -4,18 +4,28 @@ import { getBaseUrl } from "@/lib/utils";
 // Get base URL dynamically based on environment
 export const baseUrl = getBaseUrl();
 
+// Helper function to escape XML special characters
+function escapeXml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
 export async function GET() {
   const posts = await getAllPosts();
 
   const itemsXml = posts
     .map(
       (post) => `<item>
-        <title>${post.frontMatter.title}</title>
+        <title>${escapeXml(post.frontMatter.title)}</title>
         <link>${baseUrl}/blog/${post.slug}</link>
-        <description>${post.frontMatter.description || ""}</description>
+        <description>${escapeXml(post.frontMatter.description || "")}</description>
         <pubDate>${new Date(post.frontMatter.date).toUTCString()}</pubDate>
         ${post.frontMatter.tags ? 
-          post.frontMatter.tags.map(tag => `<category>${tag}</category>`).join("\n        ") 
+          post.frontMatter.tags.map(tag => `<category>${escapeXml(tag)}</category>`).join("\n        ") 
           : ""}
       </item>`
     )
