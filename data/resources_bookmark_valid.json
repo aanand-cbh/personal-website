@@ -6,6 +6,85 @@
       "description": "Resources and tools related to Software Engineering",
       "subcategories": [
         {
+          "title": "AI Engineering",
+          "description": "Resources and tools on AI Engineering",
+          "links": [
+            {
+              "name": "The AI Engineering Stack",
+              "description": "Three layers of the AI stack, how AI engineering is different from ML engineering and fullstack engineering, and more. An excerpt from the book AI Engineering by Chip Huyen",
+              "url": "https://newsletter.pragmaticengineer.com/p/the-ai-engineering-stack?open=false#%C2%A7differences-between-training-pre-training-fine-tuning-and-post-training"
+            },
+            {
+              "name": "AI Engineering in the real world",
+              "description": "What does AI engineering look like in practice? Hands-on examples and learnings from software engineers turned “AI engineers” at seven companies",
+              "url": "https://newsletter.pragmaticengineer.com/p/the-ai-engineering-stack?open=false#%C2%A7differences-between-training-pre-training-fine-tuning-and-post-training"
+            },
+            {
+              "name": "AI Engineering Book",
+              "description": "The AI Engineering Book",
+              "url": "https://github.com/chiphuyen/aie-book"
+            },
+            {
+              "name": "India - Buy AI Engineering Book",
+              "description": "Buy AI Engineering Book from Shroff Publishers",
+              "url": "https://www.shroffpublishers.com/books/9789355426666/"
+            },
+            {
+              "name": "Building with AI",
+              "description": "Building with AI",
+              "url": "https://incident.io/building-with-ai"
+            },
+            {
+              "name": "Scaling ChatGPT",
+              "description": "Scaling ChatGPT",
+              "url": "https://newsletter.pragmaticengineer.com/p/scaling-chatgpt"
+            },
+            {
+              "name": "Building Windsurf with Varun Mohan",
+              "description": "Building Windsurf with Varun Mohan",
+              "url": "https://newsletter.pragmaticengineer.com/p/building-windsurf-with-varun-mohan"
+            },
+            {
+              "name": "AI Engineering with Chip Huyen",
+              "description": "AI Engineering with Chip Huyen",
+              "url": "https://newsletter.pragmaticengineer.com/p/ai-engineering-with-chip-huyen"
+            }
+          ]
+        },
+        {
+          "title": "System Design",
+          "description": "Resources and tools on system design",
+          "links": [
+            {
+              "name": "URL Shortening System Design",
+              "description": "URL Shortening System Design",
+              "url": "https://systemdesign.one/url-shortening-system-design"
+            }
+          ]
+        },
+        {
+          "title": "Microservices",
+          "description": "Resources and tools on microservices",
+          "links": [
+            {
+              "name": "Microservices aren't the problem, incompetent people are",
+              "description": "Microservices aren't the problem, incompetent people are",
+              "url": "https://nondv.wtf/blog/posts/microservices-arent-the-problem-incompetent-people-are.html"
+            }
+          ]
+        },
+        {
+          "title": "Architecture",
+          "description": "Resources and tools on software architecture",
+          "links": [
+            {
+              "name": "Event Driven Architecture",
+              "description": "Event Driven Architecture",
+              "url": "https://code-maze.com/csharp-event-driven-architecture/"
+            }
+          ]
+        },
+        {
           "title": "Resume",
           "description": "Resources and tools on resume",
           "links": [
@@ -4062,7 +4141,7 @@
           "links": [
             {
               "name": "Darktable",
-              "description": "Darktable - A modern photo editor",
+              "description": "Use it to tag people and export their photos as copies. Really handy.",
               "url": "https://www.darktable.org/"
             },
             {

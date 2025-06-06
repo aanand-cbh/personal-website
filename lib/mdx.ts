@@ -38,12 +38,20 @@ export function getPostSlugs(): string[] {
 // Get post data by slug
 export async function getPostBySlug(slug: string): Promise<Post | null> {
   try {
+    console.log(`Loading post with slug: ${slug}`)
+    
     const fullPath = path.join(postsDirectory, `${slug}.mdx`)
     const fallbackPath = path.join(postsDirectory, `${slug}.md`)
 
-    const filePath = fs.existsSync(fullPath) ? fullPath : fallbackPath
-
-    if (!fs.existsSync(filePath)) {
+    let filePath: string
+    if (fs.existsSync(fullPath)) {
+      filePath = fullPath
+      console.log(`Found MDX file: ${fullPath}`)
+    } else if (fs.existsSync(fallbackPath)) {
+      filePath = fallbackPath
+      console.log(`Found MD file: ${fallbackPath}`)
+    } else {
+      console.log(`No file found for slug: ${slug}`)
       return null
     }
 
@@ -79,20 +87,37 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       ...data
     }
 
-    // Serialize the MDX content
-    const serializedContent = await serialize(content, {
-      mdxOptions: {
-        remarkPlugins: [remarkGfm],
-        rehypePlugins: [],
-      },
-      parseFrontmatter: false,
-    })
+    console.log(`Processing MDX content for: ${slug}`)
+    
+    // Serialize the MDX content with better error handling
+    let serializedContent
+    try {
+      serializedContent = await serialize(content, {
+        mdxOptions: {
+          remarkPlugins: [remarkGfm],
+          rehypePlugins: [],
+        },
+        parseFrontmatter: false,
+      })
+      console.log(`Successfully serialized content for: ${slug}`)
+    } catch (serializeError) {
+      console.error(`Error serializing MDX content for ${slug}:`, serializeError)
+      // Return a basic serialized structure if serialization fails
+      serializedContent = {
+        compiledSource: '',
+        frontmatter: {},
+        scope: {}
+      }
+    }
 
-    return {
+    const post = {
       slug,
       frontMatter,
       content: serializedContent
     }
+
+    console.log(`Successfully loaded post: ${slug}`)
+    return post
   } catch (error) {
     console.error(`Error getting post by slug ${slug}:`, error)
     return null
