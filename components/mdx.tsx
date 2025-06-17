@@ -1,3 +1,4 @@
+import { ChevronDown } from "lucide-react"
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote'
 import { MDXRemote } from "next-mdx-remote"
 import Image from "next/image"
@@ -6,6 +7,7 @@ import React from "react"
 import { highlight } from 'sugar-high'
 
 // Import only server-side components
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
@@ -13,11 +15,13 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage } from "@/co
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { CodeSnippet } from "@/components/ui/code-snippet"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Textarea } from "@/components/ui/textarea"
+import { YouTubeEmbed } from "@/components/ui/youtube-embed"
 
 // Add type for the MDX component props
 type MDXComponentProps = {
@@ -137,6 +141,15 @@ const components = {
   TableHead,
   TableCell,
   Textarea,
+  YouTubeEmbed,
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+  ChevronDown,
 }
 
 // Server component for MDX rendering

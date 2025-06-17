@@ -4170,6 +4170,17 @@
               "url": "https://imageoptim.com/"
             }
           ]
+        },
+        {
+          "title": "Inspiring Photos",
+          "description": "Inspiring and jaw dropping photos from reddit",
+          "links": [
+            {
+              "name": "Reddit Photography",
+              "description": "Reddit Photography",
+              "url": "https://www.reddit.com/user/abhiik/m/fotography/top/?t=week"
+            }
+          ]
         }
       ]
     },
