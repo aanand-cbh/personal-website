@@ -43,7 +43,9 @@ export default async function BlogPage({
   const { q, tags } = await searchParams || {};
   const query = q || "";
   const selectedTags = tags ? tags.split(",") : [];
-  const allPosts = await getAllPosts();
+  const allPosts = (await getAllPosts()).sort((a, b) => 
+    new Date(b.frontMatter.date).getTime() - new Date(a.frontMatter.date).getTime()
+  );
   
   // Filter posts based on search query and tags
   const posts = (() => {
