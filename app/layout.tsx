@@ -13,6 +13,7 @@ import { SiteHeader } from "@/components/site-header"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { cn, getBaseUrl } from "@/lib/utils"
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 // Load Inter font with preload
 const inter = Inter({
@@ -110,6 +111,7 @@ export default function RootLayout({
           inter.className
         )}
       >
+        <GoogleAnalytics gaId="G-9D5QL34VTT" />
         <ErrorBoundary>
           <QueryProvider>
             <ThemeProvider
