@@ -165,26 +165,27 @@ export default async function TravelBlogPostPage({ params }: { params: Promise<{
                 {post.frontMatter.title}
               </h1>
               
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
-                  <span>{formatDate(post.frontMatter.date)}</span>
+              <div className="flex flex-col gap-3 text-sm text-muted-foreground">
+                {/* Date and reading time - always on top, never compressed */}
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-4 w-4" />
+                    <span>{formatDate(post.frontMatter.date)}</span>
+                  </div>
+                  <span>•</span>
+                  <span>{post.frontMatter.readTime}</span>
                 </div>
-                <span>•</span>
-                <span>{post.frontMatter.readTime}</span>
-                
+
+                {/* Tags - separate row that can wrap freely */}
                 {post.frontMatter.tags && Array.isArray(post.frontMatter.tags) && post.frontMatter.tags.length > 0 && (
-                  <>
-                    <span>•</span>
-                    <div className="flex flex-wrap gap-2">
-                      {post.frontMatter.tags.map((tag: string) => (
-                        <Badge key={tag} variant="secondary" className="flex items-center gap-1">
-                          <Tag className="h-3 w-3" />
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </>
+                  <div className="flex flex-wrap gap-2">
+                    {post.frontMatter.tags.map((tag: string) => (
+                      <Badge key={tag} variant="secondary" className="flex items-center gap-1">
+                        <Tag className="h-3 w-3" />
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
                 )}
               </div>
               
