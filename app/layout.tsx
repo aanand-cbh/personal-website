@@ -110,6 +110,7 @@ export default function RootLayout({
           "min-h-screen bg-background font-sans antialiased",
           inter.className
         )}
+        suppressHydrationWarning={true}
       >
         <GoogleAnalytics gaId="G-9D5QL34VTT" />
         <ErrorBoundary>

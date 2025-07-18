@@ -1,10 +1,5 @@
-import { FileText } from "lucide-react"
-import type { Metadata } from "next"
-import Image from "next/image"
-
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { getBaseUrl } from "@/lib/utils"
+import type { Metadata } from "next"
 
 const baseUrl = getBaseUrl()
 
@@ -69,7 +64,7 @@ export default function AboutPage() {
         <main className="flex-1">
           <section className="w-full py-12 md:py-24 lg:py-32">
             <div className="container px-4 md:px-6">
-              <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
+              <div className="max-w-4xl mx-auto">
                 <div className="flex flex-col justify-center space-y-4">
                   <div className="space-y-2">
                     <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">About Me</h1>
@@ -93,30 +88,9 @@ export default function AboutPage() {
                         learning and expanding my horizons, and I use this platform to document my journey.
                       </p>
                     </div>
-                    <div className="space-y-2">
-                      <h2 className="text-2xl font-bold">Connect With Me</h2>
-                      <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                        <Button asChild variant="outline" className="gap-1">
-                          <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
-                            <FileText className="h-4 w-4" />
-                            Resume
-                          </a>
-                        </Button>
-                      </div>
-                    </div>
+
                   </div>
                 </div>
-                <Card className="overflow-hidden">
-                  <CardContent className="p-0">
-                    <Image
-                      src="/placeholder.svg?height=800&width=600"
-                      alt="Profile"
-                      width={600}
-                      height={800}
-                      className="aspect-[3/4] object-cover"
-                    />
-                  </CardContent>
-                </Card>
               </div>
             </div>
           </section>

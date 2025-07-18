@@ -4,7 +4,7 @@ import { ChevronRight, Home } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-import { cn } from "@/lib/utils"
+import { cn, getBaseUrl } from "@/lib/utils"
 
 interface BreadcrumbItem {
   label: string
@@ -13,7 +13,7 @@ interface BreadcrumbItem {
 
 export function Breadcrumbs() {
   const pathname = usePathname()
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+  const baseUrl = getBaseUrl()
 
   // Generate breadcrumb items based on the current path
   const breadcrumbs = pathname
