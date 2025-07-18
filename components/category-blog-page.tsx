@@ -1,7 +1,8 @@
 import Fuse from "fuse.js";
-import { Calendar, Tag } from "lucide-react";
+import { Bookmark, Calendar, Eye, RotateCcw, Tag } from "lucide-react";
 import Link from "next/link";
 
+import { getTierBadge, getTierPriority } from "@/components/blog-utils";
 import { CategoryBlogSearch } from "@/components/category-blog-search";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,7 @@ interface CategoryBlogPageProps {
   title: string;
   description: string;
   searchPlaceholder: string;
-  searchParams?: { q?: string };
+  searchParams?: { q?: string; tier?: string };
 }
 
 export async function CategoryBlogPage({
@@ -24,16 +25,29 @@ export async function CategoryBlogPage({
   searchPlaceholder,
   searchParams,
 }: CategoryBlogPageProps) {
-  const { q } = searchParams || {};
+  const { q, tier } = searchParams || {};
   const query = q || "";
+  const selectedTier = tier || "all";
   
-  const allPosts = (await getAllPosts()).sort((a, b) => 
-    new Date(b.frontMatter.date).getTime() - new Date(a.frontMatter.date).getTime()
-  );
+  const allPosts = await getAllPosts();
   
   // Filter posts that have the specified category
-  const allCategoryPosts = allPosts.filter(post => post.frontMatter.category === category);
+  let allCategoryPosts = allPosts.filter(post => post.frontMatter.category === category);
   
+  // Filter by tier if specified
+  if (selectedTier !== "all") {
+    allCategoryPosts = allCategoryPosts.filter(post => post.frontMatter.tier === selectedTier);
+  }
+  
+  // Sort by tier priority first, then by date
+  allCategoryPosts = allCategoryPosts.sort((a, b) => {
+    const aTier = getTierPriority(a.frontMatter.tier);
+    const bTier = getTierPriority(b.frontMatter.tier);
+    
+    if (aTier !== bTier) return bTier - aTier;
+    return new Date(b.frontMatter.date).getTime() - new Date(a.frontMatter.date).getTime();
+  });
+
   // Apply search filter if query exists
   const categoryPosts = (() => {
     if (!query) return allCategoryPosts;
@@ -84,6 +98,71 @@ export async function CategoryBlogPage({
             </p>
           </div>
           
+          {/* Tier Filter Buttons */}
+          <div className="mb-6">
+            <div className="flex flex-wrap gap-2">
+              <Button 
+                asChild 
+                variant={selectedTier === 'all' ? 'default' : 'outline'}
+                size="sm"
+              >
+                <Link 
+                  href={{
+                    pathname: `/blog/${category}`,
+                    query: query ? { q: query } : undefined
+                  }}
+                >
+                  All Posts
+                </Link>
+              </Button>
+              <Button 
+                asChild 
+                variant={selectedTier === 'reference' ? 'default' : 'outline'}
+                size="sm"
+              >
+                <Link 
+                  href={{
+                    pathname: `/blog/${category}`,
+                    query: { ...(query ? { q: query } : {}), tier: 'reference' }
+                  }}
+                >
+                  <Bookmark className="h-4 w-4 mr-1" />
+                  Reference
+                </Link>
+              </Button>
+              <Button 
+                asChild 
+                variant={selectedTier === 'revisit' ? 'default' : 'outline'}
+                size="sm"
+              >
+                <Link 
+                  href={{
+                    pathname: `/blog/${category}`,
+                    query: { ...(query ? { q: query } : {}), tier: 'revisit' }
+                  }}
+                >
+                  <RotateCcw className="h-4 w-4 mr-1" />
+                  Revisit
+                </Link>
+              </Button>
+              <Button 
+                asChild 
+                variant={selectedTier === 'read' ? 'default' : 'outline'}
+                size="sm"
+              >
+                <Link 
+                  href={{
+                    pathname: `/blog/${category}`,
+                    query: { ...(query ? { q: query } : {}), tier: 'read' }
+                  }}
+                >
+                  <Eye className="h-4 w-4 mr-1" />
+                  Read
+                </Link>
+              </Button>
+            </div>
+          </div>
+          
           {/* Search Bar */}
           <CategoryBlogSearch 
             category={category} 
@@ -99,6 +178,14 @@ export async function CategoryBlogPage({
                   Found {categoryPosts.length} result{categoryPosts.length !== 1 ? 's' : ''} for &quot;{query}&quot;
                 </p>
               )}
+            </div>
+          )}
+          
+          {selectedTier !== 'all' && (
+            <div className="mb-6 mt-2 text-sm text-muted-foreground">
+              <p>
+                Showing {categoryPosts.length} {selectedTier} post{categoryPosts.length !== 1 ? 's' : ''}
+              </p>
             </div>
           )}
           
@@ -129,6 +216,13 @@ export async function CategoryBlogPage({
                         </div>
                         <span>•</span>
                         <span>{post.frontMatter.readTime}</span>
+                        {/* Tier badge */}
+                        {post.frontMatter.tier && (
+                          <>
+                            <span>•</span>
+                            {getTierBadge(post.frontMatter.tier)}
+                          </>
+                        )}
                       </div>
 
                       {/* Tags - separate row that can wrap freely */}

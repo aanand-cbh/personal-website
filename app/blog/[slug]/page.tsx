@@ -2,6 +2,7 @@ import { ArrowLeft, Calendar, Tag } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
+import { getTierBadge } from "@/components/blog-utils"
 import { MDXWrapper } from "@/components/mdx-wrapper"
 import { ShareButtons } from "@/components/share-buttons"
 import { Badge } from "@/components/ui/badge"
@@ -233,6 +234,13 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               <h1 className="text-3xl font-bold tracking-tighter">
                 {post.frontMatter.title}
               </h1>
+              
+              {/* Add tier badge if present */}
+              {post.frontMatter.tier && (
+                <div className="flex items-center gap-2">
+                  {getTierBadge(post.frontMatter.tier)}
+                </div>
+              )}
               
               <div className="flex flex-col gap-3 text-sm text-muted-foreground">
                 {/* Date and reading time - always on top, never compressed */}

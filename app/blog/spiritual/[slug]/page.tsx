@@ -2,6 +2,7 @@ import { ArrowLeft, Calendar, Tag } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
+import { getTierBadge } from "@/components/blog-utils"
 import { MDXWrapper } from "@/components/mdx-wrapper"
 import { ShareButtons } from "@/components/share-buttons"
 import { Badge } from "@/components/ui/badge"
@@ -159,6 +160,8 @@ export default async function SpiritualBlogPostPage({ params }: { params: Promis
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                 <Badge variant="outline">Spiritual</Badge>
+                {/* Add tier badge next to category */}
+                {post.frontMatter.tier && getTierBadge(post.frontMatter.tier)}
               </div>
               
               <h1 className="text-3xl font-bold tracking-tighter">

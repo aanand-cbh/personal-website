@@ -12,6 +12,7 @@ export type Post = {
     date: string
     description: string
     category?: string
+    tier?: 'reference' | 'revisit' | 'read'
     readTime?: string
     tags?: string[]
     clientSide?: boolean
