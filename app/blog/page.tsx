@@ -1,11 +1,12 @@
 import Fuse from "fuse.js";
-import { Calendar, Tag, X } from "lucide-react";
+import { Calendar, Code2, Heart, Plane, Tag, Users, X } from "lucide-react";
 import Link from "next/link";
 
-import { BlogSearch } from "@/components/blog-search";
+
 import { RssIcon } from "@/components/icons";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getAllPosts } from "@/lib/mdx";
 import { containsExactWord, containsPartialWord, formatDate, getBaseUrl } from "@/lib/utils";
@@ -43,9 +44,52 @@ export default async function BlogPage({
   const { q, tags } = await searchParams || {};
   const query = q || "";
   const selectedTags = tags ? tags.split(",") : [];
-  const allPosts = (await getAllPosts()).sort((a, b) => 
-    new Date(b.frontMatter.date).getTime() - new Date(a.frontMatter.date).getTime()
-  );
+  const allPosts = (await getAllPosts())
+    .filter(post => !post.frontMatter.category) // Only show uncategorized posts
+    .sort((a, b) => 
+      new Date(b.frontMatter.date).getTime() - new Date(a.frontMatter.date).getTime()
+    );
+
+  // Get all posts for category counts
+  const allPostsWithCategories = await getAllPosts();
+  
+  // Define categories with their metadata
+  const categories = [
+    {
+      slug: 'tech',
+      title: 'Tech & Software Engineering',
+      description: 'Technology, software engineering, and development.',
+      icon: Code2,
+      color: 'from-blue-500 to-purple-600'
+    },
+    {
+      slug: 'travel',
+      title: 'Travel',
+      description: 'Travel guides, destinations, and adventure stories',
+      icon: Plane,
+      color: 'from-green-500 to-blue-500'
+    },
+    {
+      slug: 'spiritual',
+      title: 'Spiritual',
+      description: 'Spiritual insights, personal growth, and mindfulness',
+      icon: Heart,
+      color: 'from-purple-500 to-pink-500'
+    },
+    {
+      slug: 'personal',
+      title: 'Personal',
+      description: 'Personal stories, life lessons, and reflections',
+      icon: Users,
+      color: 'from-orange-500 to-red-500'
+    }
+  ];
+
+  // Calculate post counts for each category
+  const categoriesWithCounts = categories.map(category => ({
+    ...category,
+    count: allPostsWithCategories.filter(post => post.frontMatter.category === category.slug).length
+  })).filter(category => category.count > 0); // Only show categories with posts
   
   // Filter posts based on search query and tags
   const posts = (() => {
@@ -211,8 +255,7 @@ export default async function BlogPage({
             Thoughts, ideas, and reflections on various topics
           </p>
           
-          {/* Search Bar */}
-          <BlogSearch />
+
 
           {/* Active Tags */}
           {selectedTags.length > 0 && (
@@ -267,6 +310,51 @@ export default async function BlogPage({
                       : "Our smart search finds matches even with typos or similar words"}
                   </span>
                 </p>
+              )}
+            </div>
+          )}
+
+          {/* Categories Section */}
+          {!query && !selectedTags.length && (
+            <div className="mb-8">
+              <h2 className="text-xl font-semibold mb-4">Explore by Category</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                {categoriesWithCounts.map((category) => {
+                  const IconComponent = category.icon;
+                  return (
+                    <Link key={category.slug} href={`/blog/${category.slug}`}>
+                      <Card className="h-full transition-all hover:shadow-lg hover:scale-[1.02] cursor-pointer group">
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center justify-between">
+                            <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${category.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                              <IconComponent className="w-5 h-5 text-white" />
+                            </div>
+                            <Badge variant="secondary" className="text-xs">
+                              {category.count} post{category.count !== 1 ? 's' : ''}
+                            </Badge>
+                          </div>
+                          <CardTitle className="text-lg group-hover:text-primary transition-colors">
+                            {category.title}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          <CardDescription className="text-sm leading-relaxed">
+                            {category.description}
+                          </CardDescription>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  );
+                })}
+              </div>
+              
+              {/* Show all categories link if user is looking at uncategorized posts */}
+              {allPosts.length > 0 && (
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Also check out posts from our themed categories above, or browse all uncategorized posts below.
+                  </p>
+                </div>
               )}
             </div>
           )}
@@ -338,9 +426,7 @@ export default async function BlogPage({
                   {index < posts.length - 1 && <Separator className="mb-3" />}
                 </div>
               ))
-            ) : (
-              <p className="text-muted-foreground">No posts found.</p>
-            )}
+            ) : null}
           </div>
         </section>
       </main>

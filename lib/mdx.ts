@@ -11,6 +11,7 @@ export type Post = {
     title: string
     date: string
     description: string
+    category?: string
     readTime?: string
     tags?: string[]
     clientSide?: boolean
