@@ -244,6 +244,76 @@ export async function getPostsByCategory(category: string): Promise<Post[]> {
   }
 }
 
+// Get posts metadata without serializing content (useful for RSS, sitemaps, etc.)
+export async function getPostsMetadata(): Promise<Omit<Post, 'content'>[]> {
+  try {
+    const categories = getCategories()
+    const allPosts: Omit<Post, 'content'>[] = []
+    
+    for (const category of categories) {
+      const categoryPath = path.join(postsDirectory, category)
+      
+      // Check if category directory exists
+      if (!fs.existsSync(categoryPath)) {
+        continue
+      }
+      
+      // Get slugs only from this category
+      const categoryFiles = fs
+        .readdirSync(categoryPath)
+        .filter((file) => file.endsWith(".mdx") || file.endsWith(".md"))
+        .map((file) => file.replace(/\.mdx?$/, ""))
+      
+      // Load posts metadata only from this category
+      for (const slug of categoryFiles) {
+        const filePath = path.join(categoryPath, `${slug}.mdx`)
+        const fallbackPath = path.join(categoryPath, `${slug}.md`)
+        
+        let actualPath: string
+        if (fs.existsSync(filePath)) {
+          actualPath = filePath
+        } else if (fs.existsSync(fallbackPath)) {
+          actualPath = fallbackPath
+        } else {
+          continue
+        }
+        
+        const fileContents = fs.readFileSync(actualPath, "utf8")
+        const { data, content } = matter(fileContents)
+
+        // Calculate read time if not provided
+        if (!data.readTime) {
+          data.readTime = calculateReadTime(content)
+        }
+
+        const frontMatter: Post['frontMatter'] = {
+          title: data.title || "",
+          date: data.date || "",
+          description: data.description || "",
+          category: data.category || category,
+          tier: data.tier,
+          tags: data.tags || [],
+          readTime: data.readTime,
+          clientSide: data.clientSide || false,
+          ...data
+        }
+
+        allPosts.push({
+          slug,
+          frontMatter
+        })
+      }
+    }
+    
+    return allPosts.sort((post1, post2) => 
+      new Date(post2.frontMatter.date).getTime() - new Date(post1.frontMatter.date).getTime()
+    )
+  } catch (error) {
+    console.error("Error getting posts metadata:", error)
+    return []
+  }
+}
+
 // Helper function to calculate read time
 function calculateReadTime(content: string): string {
   const wordsPerMinute = 175

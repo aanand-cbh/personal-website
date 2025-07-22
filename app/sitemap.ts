@@ -1,4 +1,4 @@
-import { getAllPosts } from "@/lib/mdx";
+import { getPostsMetadata } from "@/lib/mdx";
 import { getBaseUrl } from "@/lib/utils";
 import { MetadataRoute } from "next";
 
@@ -6,12 +6,12 @@ import { MetadataRoute } from "next";
 export const baseUrl = getBaseUrl();
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // Get all blog posts
-  const posts = await getAllPosts();
+  // Get all blog posts metadata
+  const posts = await getPostsMetadata();
   
   // Map blog posts to sitemap entries
   const blogEntries = posts.map((post) => ({
-    url: `${baseUrl}/blog/${post.slug}`,
+    url: `${baseUrl}/blog/${post.frontMatter.category}/${post.slug}`,
     lastModified: new Date(post.frontMatter.date),
     changeFrequency: "monthly" as const,
     priority: 0.7,
@@ -27,6 +27,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/blog/tech`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/blog/spiritual`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/blog/travel`,
       lastModified: new Date(),
       changeFrequency: "weekly" as const,
       priority: 0.8,

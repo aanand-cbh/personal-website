@@ -25,6 +25,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
 import { ChartContainer as Chart } from "@/components/ui/chart"
 import { Checkbox } from "@/components/ui/checkbox"
+import { CodeBlock } from "@/components/ui/code-block"
 import { CodeSnippet } from "@/components/ui/code-snippet"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Dialog, DialogContent, DialogDescription as DialogDescriptionPrimitive, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -33,6 +34,7 @@ import { Form, FormControl, FormField, FormLabel, FormMessage } from "@/componen
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Mermaid } from "@/components/ui/mermaid"
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu"
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -64,7 +66,7 @@ type MDXComponentProps = {
 
 // Add proper types for the component props
 function CustomLink(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
-  const href = props.href
+  const { href, ...rest } = props
 
   if (href?.startsWith("/")) {
     return (
@@ -78,7 +80,7 @@ function CustomLink(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
     return <a {...props} />
   }
 
-  return <a target="_blank" rel="noopener noreferrer" {...props} />
+  return <a target="_blank" rel="noopener noreferrer" suppressHydrationWarning {...props} />
 }
 
 function RoundedImage(props: React.ComponentProps<typeof Image>) {
@@ -156,6 +158,7 @@ const components = {
   RechartsLegend,
   ToastButton,
   toast: useToast,
+  Mermaid,
   
   // All shadcn/ui components (both client and server-side)
   Accordion,
@@ -200,6 +203,7 @@ const components = {
   CarouselNext,
   CarouselPrevious,
   Checkbox,
+  CodeBlock,
   CodeSnippet,
   Collapsible,
   CollapsibleTrigger,

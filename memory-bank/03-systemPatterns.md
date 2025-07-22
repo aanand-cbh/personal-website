@@ -105,6 +105,51 @@ export async function generateMetadata({ params }) {
 }
 ```
 
+### 5. Flexible Component Architecture Pattern
+**Philosophy**: Context-driven component selection for optimal UX
+- **No Component Restrictions**: Use any component from components/ui or create new ones
+- **Context-Appropriate Selection**: Choose components based on content type and user needs
+- **UX-First Approach**: Prioritize user experience over component preferences
+- **Performance Awareness**: Ensure components don't negatively impact performance
+
+**Component Selection Guidelines**:
+```typescript
+// For information display: Cards, Alerts, Badges
+<Card>
+  <CardHeader>
+    <CardTitle>Information Title</CardTitle>
+  </CardHeader>
+  <CardContent>Content here</CardContent>
+</Card>
+
+// For interactive content: Tabs, Collapsible, Accordion
+<Tabs defaultValue="tab1">
+  <TabsList>
+    <TabsTrigger value="tab1">Tab 1</TabsTrigger>
+  </TabsList>
+  <TabsContent value="tab1">Content</TabsContent>
+</Tabs>
+
+// For action items: Checkboxes, Buttons
+<div className="flex items-center gap-3">
+  <Checkbox id="action1" />
+  <label htmlFor="action1">Action item</label>
+</div>
+
+// For important notices: Alerts
+<Alert>
+  <AlertTitle>Important Notice</AlertTitle>
+  <AlertDescription>Critical information</AlertDescription>
+</Alert>
+```
+
+**Benefits**:
+- Improved content scannability
+- Better mobile experience
+- Enhanced visual hierarchy
+- Faster information consumption
+- Maintained interactivity where beneficial
+
 ### 5. Search Architecture
 **Category-Scoped Search**: Each category has independent search
 ```typescript

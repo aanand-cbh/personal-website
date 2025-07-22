@@ -21,6 +21,7 @@ import { FloatingNavigationMenu } from "@/components/ui/floating-navigation-menu
 import { Form, FormControl, FormField, FormLabel, FormMessage } from "@/components/ui/form"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Input } from "@/components/ui/input"
+import { Mermaid } from "@/components/ui/mermaid"
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu"
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -240,6 +241,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     CardContent: ({ className, ...props }) => <CardContent className={cn("p-6", className)} {...props} />,
     CardFooter: ({ className, ...props }) => <CardFooter className={cn("", className)} {...props} />,
     Checkbox: ({ className, ...props }) => <Checkbox className={cn("", className)} {...props} />,
+    CodeBlock: ({ className, ...props }) => <CodeBlock className={cn("", className)} {...props} />,
     CodeSnippet: ({ className, ...props }) => <CodeSnippet className={cn("mr-2", className)} {...props} />,
     Collapsible: ({ className, ...props }) => <Collapsible className={cn("", className)} {...props} />,
     CollapsibleTrigger: ({ className, ...props }) => <CollapsibleTrigger className={cn("", className)} {...props} />,
@@ -308,6 +310,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     YouTubeEmbed: ({ className, ...props }) => (
       <YouTubeEmbed className={cn("", className)} {...props} />
     ),
+    Mermaid: ({ className, ...props }) => <Mermaid className={cn("", className)} {...props} />,
     ChevronDown: ({ className, ...props }) => <ChevronDown className={cn("", className)} {...props} />,
     ...components,
   }

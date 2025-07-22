@@ -1,4 +1,4 @@
-import { getAllPosts } from "@/lib/mdx";
+import { getPostsMetadata } from "@/lib/mdx";
 import { getBaseUrl } from "@/lib/utils";
 
 // Get base URL dynamically based on environment
@@ -15,13 +15,13 @@ function escapeXml(unsafe: string): string {
 }
 
 export async function GET() {
-  const posts = await getAllPosts();
+  const posts = await getPostsMetadata();
 
   const itemsXml = posts
     .map(
       (post) => `<item>
         <title>${escapeXml(post.frontMatter.title)}</title>
-        <link>${baseUrl}/blog/${post.slug}</link>
+        <link>${baseUrl}/blog/${post.frontMatter.category}/${post.slug}</link>
         <description>${escapeXml(post.frontMatter.description || "")}</description>
         <pubDate>${new Date(post.frontMatter.date).toUTCString()}</pubDate>
         ${post.frontMatter.tags ? 

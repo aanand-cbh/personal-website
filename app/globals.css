@@ -228,3 +228,85 @@ code .token.operator {
 code .token.number {
   color: #ff9d00;
 }
+
+/* Overrides for Tailwind Typography */
+article.prose {
+  --tw-prose-body: var(--foreground);
+  --tw-prose-headings: var(--primary);
+  --tw-prose-lead: var(--foreground);
+  --tw-prose-links: var(--primary);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-counters: var(--primary);
+  --tw-prose-bullets: var(--primary);
+  --tw-prose-hr: var(--foreground);
+  --tw-prose-quotes: var(--foreground);
+  --tw-prose-quote-borders: var(--foreground);
+  --tw-prose-captions: var(--foreground);
+  --tw-prose-kbd: var(--foreground);
+  --tw-prose-code: var(--foreground);
+  --tw-prose-pre-code: var(--foreground);
+  --tw-prose-th-borders: var(--foreground);
+  --tw-prose-td-borders: var(--foreground);
+}
+
+/* Mermaid diagram styling */
+.mermaid {
+  /* Center mermaid diagrams */
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin: 2rem 0 !important;
+  min-height: 200px !important;
+}
+
+.mermaid svg {
+  /* Ensure SVG is responsive and dynamic */
+  max-width: 100% !important;
+  height: auto !important;
+  width: auto !important;
+}
+
+/* Mermaid container styling */
+.mermaid-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0;
+  width: 100%;
+  min-height: 200px;
+  padding: 1rem;
+}
+
+.mermaid-container svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  width: auto;
+}
+
+/* Mermaid fallback styling */
+.mermaid-fallback {
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+}
+
+.mermaid-fallback code {
+  background: transparent !important;
+  padding: 0 !important;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: hsl(var(--foreground));
+}
+
+/* Dark mode adjustments for mermaid */
+@media (prefers-color-scheme: dark) {
+  .mermaid svg,
+  .mermaid-container svg {
+    background: transparent !important;
+  }
+}
