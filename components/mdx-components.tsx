@@ -1,3 +1,4 @@
+import { ChevronDown } from "lucide-react"
 import type { MDXComponents } from "mdx/types"
 import Image from "next/image"
 import Link from "next/link"
@@ -37,6 +38,7 @@ import { Toast } from "@/components/ui/toast"
 import { Toggle } from "@/components/ui/toggle"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { YouTubeEmbed } from "@/components/ui/youtube-embed"
 import { cn } from "@/lib/utils"
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
@@ -303,6 +305,10 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     FloatingNavigationMenu: ({ className, ...props }) => (
       <FloatingNavigationMenu className={cn("", className)} {...props} />
     ),
+    YouTubeEmbed: ({ className, ...props }) => (
+      <YouTubeEmbed className={cn("", className)} {...props} />
+    ),
+    ChevronDown: ({ className, ...props }) => <ChevronDown className={cn("", className)} {...props} />,
     ...components,
   }
 }
