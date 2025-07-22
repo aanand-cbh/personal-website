@@ -7,7 +7,7 @@ import { CategoryBlogSearch } from "@/components/category-blog-search";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { getAllPosts } from "@/lib/mdx";
+import { getPostsByCategory } from "@/lib/mdx";
 import { formatDate } from "@/lib/utils";
 
 interface CategoryBlogPageProps {
@@ -29,10 +29,10 @@ export async function CategoryBlogPage({
   const query = q || "";
   const selectedTier = tier || "all";
   
-  const allPosts = await getAllPosts();
+  const allPosts = await getPostsByCategory(category);
   
-  // Filter posts that have the specified category
-  let allCategoryPosts = allPosts.filter(post => post.frontMatter.category === category);
+  // All posts are already from the specified category
+  let allCategoryPosts = allPosts;
   
   // Filter by tier if specified
   if (selectedTier !== "all") {

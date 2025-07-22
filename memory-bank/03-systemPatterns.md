@@ -10,11 +10,27 @@
 
 ### Blog System Architecture
 ```
-content/blog/*.mdx → lib/mdx.ts → app/blog/[category]/page.tsx
+content/blog/{category}/*.mdx → lib/mdx.ts → app/blog/[category]/page.tsx
                                      ↓
                          components/CategoryBlogPage.tsx
                                      ↓
-                         Rendered category pages with search
+                         Rendered category pages with search & tier filtering
+```
+
+**File Structure**:
+```
+content/blog/
+├── tech/
+│   ├── understanding-react-hydration-errors.mdx (reference)
+│   ├── favorite-resources.mdx (revisit)
+│   ├── interactive-shadcn-components.mdx (revisit)
+│   └── getting-started.mdx (read)
+├── travel/
+│   └── places-to-visit-near-hyderabad.mdx (revisit)
+├── spiritual/
+│   └── oprah-winfrey-why-i-follow-hinduism.mdx (reference)
+└── personal/
+    └── (future personal posts)
 ```
 
 ## Key Design Patterns

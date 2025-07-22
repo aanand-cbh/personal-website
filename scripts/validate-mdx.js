@@ -42,11 +42,31 @@ function validateMdxFile(filePath) {
   }
 }
 
-// Get all MDX files
+// Get all MDX files from category directories
 function getAllMdxFiles() {
-  return fs.readdirSync(postsDirectory)
-    .filter(file => file.endsWith('.mdx') || file.endsWith('.md'))
-    .map(file => path.join(postsDirectory, file));
+  const allFiles = [];
+  
+  try {
+    // Get all category directories
+    const categories = fs.readdirSync(postsDirectory, { withFileTypes: true })
+      .filter(dirent => dirent.isDirectory())
+      .map(dirent => dirent.name);
+    
+    // Get files from each category directory
+    for (const category of categories) {
+      const categoryPath = path.join(postsDirectory, category);
+      const files = fs.readdirSync(categoryPath)
+        .filter(file => file.endsWith('.mdx') || file.endsWith('.md'))
+        .map(file => path.join(categoryPath, file));
+      
+      allFiles.push(...files);
+    }
+    
+    return allFiles;
+  } catch (error) {
+    console.error('Error reading MDX files:', error);
+    return [];
+  }
 }
 
 // Validate all MDX files

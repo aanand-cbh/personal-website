@@ -3,28 +3,43 @@
 ## Current Work Focus
 As of July 18th, 2025, the primary focus is on:
 
-1. **Blog System Enhancement**: Recently completed major categorization overhaul
-2. **Content Quality**: Creating high-quality technical content (hydration errors blog post)
-3. **Performance Optimization**: Resolving hydration issues and console log cleanup
-4. **Documentation**: Establishing comprehensive memory bank system
+1. **Blog System Enhancement**: Recently completed major categorization overhaul with tier system
+2. **File Structure Optimization**: Implemented category-based file organization 
+3. **Content Classification**: Reference/revisit/read tier system with reusable utilities
+4. **Documentation**: Maintaining comprehensive memory bank system
 
 ## Recent Changes
 
-### Major Implementation: Blog Categorization System
-**Completed**: Comprehensive blog categorization with reusable components
+### Major Implementation: File Structure Reorganization
+**Completed**: Category-based file organization matching URL structure
 
 **Key Changes**:
-- Added `category` field to all MDX frontmatter files
-- Created category-specific routes: `/blog/tech/`, `/blog/travel/`, `/blog/spiritual/`
-- Implemented `CategoryBlogPage` reusable component eliminating code duplication
-- Added category-scoped search functionality with `CategoryBlogSearch` component
-- Updated routing to properly separate categorized vs uncategorized posts
+- Reorganized content from `content/blog/*.mdx` to `content/blog/{category}/*.mdx`
+- Updated MDX loading logic to traverse category directories
+- Created dedicated folders: `tech/`, `travel/`, `spiritual/`, `personal/`
+- Maintained all existing functionality while improving organization
 
 **Benefits Achieved**:
-- 75% reduction in code duplication across category pages
-- Improved user experience with focused search within categories
-- Better content organization and discovery
-- SEO-optimized category-specific URLs
+- File structure matches URL structure (`/blog/tech/` → `content/blog/tech/`)
+- Easier content management and organization
+- Clear separation of content by category
+- Scalable structure for future content growth
+
+### Major Implementation: Tier System with Reusable Utilities
+**Completed**: Reference/revisit/read classification with centralized components
+
+**Key Changes**:
+- Replaced essential/valuable/general with reference/revisit/read tiers
+- Created reusable `components/blog-utils.tsx` with `getTierBadge()` function
+- Added tier filtering buttons to category pages with appropriate icons
+- Implemented smart sorting by tier priority then date
+- Updated all blog post frontmatter with tier classifications
+
+**Benefits Achieved**:
+- Action-oriented tier naming that reflects usage patterns
+- Eliminated code duplication across all blog pages
+- Consistent tier badge styling and behavior
+- URL-based tier filtering with clear user feedback
 
 ### Performance Fixes
 **Hydration Error Resolution**:

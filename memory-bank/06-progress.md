@@ -11,10 +11,12 @@
 
 ### Blog System
 - **Categorization**: Complete category-based organization (Tech, Travel, Spiritual)
+- **File Structure**: Category-based file organization matching URL structure
+- **Tier System**: Reference/revisit/read classification with filtering
 - **Individual Posts**: Dynamic routing for all blog posts
 - **Search Functionality**: Category-scoped search with fuzzy matching
 - **SEO Optimization**: Meta tags, structured data, and sitemaps
-- **Content Management**: MDX with frontmatter for rich content creation
+- **Content Management**: MDX with frontmatter and reusable tier utilities
 
 ### User Experience
 - **Responsive Design**: Mobile-first approach working across all devices
