@@ -71,6 +71,40 @@ As of July 18th, 2025, the primary focus is on:
 - Added `suppressHydrationWarning` to body tag for browser extension compatibility
 - Cleaned up verbose console logging in MDX processing
 
+**Accordion Component Fix**:
+- **Root Cause Identified**: Accordion component had custom hash-based state management causing client-side rendering issues
+- **Server vs Client Rendering**: Collapsible components work in server-side rendering, Accordion components failed in client-side rendering
+- **Solution Applied**: Removed custom `window.location.hash` state management from accordion component
+- **Result**: Reverted to standard Radix UI accordion behavior for proper SSR and client-side compatibility
+- **Testing**: Both server-side (Oprah blog) and client-side (cursor memory bank) accordion components now work correctly
+
+**Accordion Value Issue Resolution**:
+- **Root Cause Identified**: Using `value="context-extensions"` on Accordion root with `type="single"` creates controlled component conflict
+- **Problem**: When using `type="single"` with `collapsible`, setting `value` on root makes it controlled, but without proper state management
+- **Solution Applied**: Removed `value` prop from Accordion root, allowing it to be uncontrolled component
+- **Alternative Solution**: Use `defaultValue` instead of `value` for initial state without controlled behavior
+- **Result**: Accordion components now work correctly without hydration mismatches
+
+**Enhanced Hydration Mismatch Fix**:
+- **Root Cause Identified**: Browser extensions (like Clutter Free) adding CSS classes to DOM elements before React hydration
+- **Problem**: Classes like `cf_div_theme_dark` causing server/client HTML mismatch in HoverCard and Link components
+- **Solution Applied**: 
+  - Enhanced browser extension prevention script in layout.tsx with more aggressive className setter override
+  - Added `suppressHydrationWarning` to CustomLink component in mdx-client.tsx
+  - Enhanced HoverCard components with suppressHydrationWarning
+  - Added suppressHydrationWarning to all Card components (Card, CardHeader, CardTitle, etc.)
+  - Added suppressHydrationWarning to Badge component
+  - Implemented MutationObserver to monitor and clean new elements
+  - Added multiple cleanup intervals (0, 50, 100, 200, 500, 1000ms) to catch all modifications
+- **Result**: Comprehensive protection against browser extension interference during hydration
+- **Components Updated**:
+  - `components/ui/hover-card.tsx` - Added suppressHydrationWarning to HoverCardTrigger and HoverCardContent
+  - `components/ui/card.tsx` - Added suppressHydrationWarning to all Card components
+  - `components/ui/badge.tsx` - Added suppressHydrationWarning to Badge component
+  - `components/mdx-client.tsx` - Enhanced CustomLink with suppressHydrationWarning
+- **Files Updated**:
+  - `app/layout.tsx` - Enhanced browser extension prevention with className setter override and MutationObserver
+
 **About Page Simplification**:
 - Removed "Connect With Me" section and resume button
 - Removed placeholder profile image

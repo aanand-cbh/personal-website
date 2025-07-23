@@ -105,6 +105,109 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head suppressHydrationWarning>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Enhanced hydration safety - prevent browser extensions from causing hydration mismatches
+              (function() {
+                // Store original methods
+                const originalSetAttribute = Element.prototype.setAttribute;
+                const originalClassNameDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'className');
+                
+                // Override setAttribute to prevent browser extension modifications
+                Element.prototype.setAttribute = function(name, value) {
+                  if (name === 'class' || name === 'className') {
+                    // Check if this is a browser extension modification
+                    if (typeof value === 'string') {
+                      const hasExtensionClass = /clutterFree_|clutter|extension_|cf_|darkreader|ublock|adblock/i.test(value);
+                      if (hasExtensionClass) {
+                        // Don't set the attribute if it's a browser extension modification
+                        return;
+                      }
+                    }
+                  }
+                  return originalSetAttribute.call(this, name, value);
+                };
+                
+                // Override className setter to prevent browser extension modifications
+                Object.defineProperty(Element.prototype, 'className', {
+                  get: function() {
+                    return this.getAttribute('class') || '';
+                  },
+                  set: function(value) {
+                    if (typeof value === 'string') {
+                      // Check if this is a browser extension modification
+                      const hasExtensionClass = /clutterFree_|clutter|extension_|cf_|darkreader|ublock|adblock/i.test(value);
+                      if (!hasExtensionClass) {
+                        this.setAttribute('class', value);
+                      }
+                    }
+                  },
+                  configurable: true
+                });
+                
+                // Enhanced cleanup function
+                function cleanupExtensionClasses() {
+                  const elements = document.querySelectorAll('*');
+                  elements.forEach(function(element) {
+                    if (element.className && typeof element.className === 'string') {
+                      const cleaned = element.className
+                        .replace(/\\bclutterFree_[^\\s]*/g, '')
+                        .replace(/\\bclutter[^\\s]*/g, '')
+                        .replace(/\\bextension_[^\\s]*/g, '')
+                        .replace(/\\bcf_[^\\s]*/g, '')
+                        .replace(/\\bdarkreader[^\\s]*/g, '')
+                        .replace(/\\bublock[^\\s]*/g, '')
+                        .replace(/\\badblock[^\\s]*/g, '')
+                        .replace(/\\s+/g, ' ')
+                        .trim();
+                      if (cleaned !== element.className) {
+                        element.setAttribute('class', cleaned);
+                      }
+                    }
+                  });
+                }
+                
+                // Run cleanup at multiple intervals to catch all modifications
+                const cleanupIntervals = [0, 50, 100, 200, 500, 1000];
+                cleanupIntervals.forEach(delay => {
+                  setTimeout(cleanupExtensionClasses, delay);
+                });
+                
+                // Also run cleanup when DOM is ready
+                if (document.readyState === 'loading') {
+                  document.addEventListener('DOMContentLoaded', cleanupExtensionClasses);
+                } else {
+                  cleanupExtensionClasses();
+                }
+                
+                // Monitor for new elements and clean them
+                const observer = new MutationObserver(function(mutations) {
+                  mutations.forEach(function(mutation) {
+                    if (mutation.type === 'childList') {
+                      mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === Node.ELEMENT_NODE) {
+                          cleanupExtensionClasses();
+                        }
+                      });
+                    }
+                  });
+                });
+                
+                // Start observing when DOM is ready
+                if (document.readyState === 'loading') {
+                  document.addEventListener('DOMContentLoaded', function() {
+                    observer.observe(document.body, { childList: true, subtree: true });
+                  });
+                } else {
+                  observer.observe(document.body, { childList: true, subtree: true });
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased",

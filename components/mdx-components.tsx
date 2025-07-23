@@ -312,6 +312,15 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ),
     Mermaid: ({ className, ...props }) => <Mermaid className={cn("", className)} {...props} />,
     ChevronDown: ({ className, ...props }) => <ChevronDown className={cn("", className)} {...props} />,
+    Link: ({ href, className, children, ...props }) => (
+      <Link
+        href={href as string}
+        className={cn("font-medium underline underline-offset-4 text-primary hover:text-primary/80", className)}
+        {...props}
+      >
+        {children}
+      </Link>
+    ),
     ...components,
   }
 }

@@ -9,34 +9,13 @@ import { cn } from "@/lib/utils"
 const Accordion = React.forwardRef<
   React.ElementRef<typeof AccordionPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Root>
->(({ className, ...props }, ref) => {
-  const [value, setValue] = React.useState<string | undefined>(() => {
-    if (typeof window !== 'undefined') {
-      return window.location.hash.slice(1) || undefined
-    }
-    return undefined
-  })
-
-  React.useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.slice(1)
-      setValue(hash || undefined)
-    }
-
-    window.addEventListener('hashchange', handleHashChange)
-    return () => window.removeEventListener('hashchange', handleHashChange)
-  }, [])
-
-  return (
-    <AccordionPrimitive.Root
-      ref={ref}
-      value={value}
-      onValueChange={setValue}
-      className={cn("", className)}
-      {...props}
-    />
-  )
-})
+>(({ className, ...props }, ref) => (
+  <AccordionPrimitive.Root
+    ref={ref}
+    className={cn("", className)}
+    {...props}
+  />
+))
 Accordion.displayName = "Accordion"
 
 const AccordionItem = React.forwardRef<

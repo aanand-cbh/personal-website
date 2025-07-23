@@ -70,14 +70,14 @@ function CustomLink(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
 
   if (href?.startsWith("/")) {
     return (
-      <Link href={href} {...props}>
+      <Link href={href} {...props} suppressHydrationWarning>
         {props.children}
       </Link>
     )
   }
 
   if (href?.startsWith("#")) {
-    return <a {...props} />
+    return <a {...props} suppressHydrationWarning />
   }
 
   return <a target="_blank" rel="noopener noreferrer" suppressHydrationWarning {...props} />
@@ -146,6 +146,7 @@ const components = {
   h6: createHeading(6),
   Image: RoundedImage,
   a: CustomLink,
+  Link: CustomLink,
   img: RoundedImage,
   code: Code,
   ChevronDown,
