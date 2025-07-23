@@ -82,10 +82,6 @@ export function ErrorBoundary({
         // You could send this to your error tracking service here
         // Example: Sentry.captureException(error, { extra: errorInfo })
       }}
-      // Prevent infinite error loops
-      onRecoverableError={(error, errorInfo) => {
-        console.warn('Recoverable error:', error, errorInfo)
-      }}
     >
       {children}
     </ReactErrorBoundary>
