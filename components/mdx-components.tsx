@@ -38,7 +38,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Toast } from "@/components/ui/toast"
 import { Toggle } from "@/components/ui/toggle"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { YouTubeEmbed } from "@/components/ui/youtube-embed"
 import { cn } from "@/lib/utils"
 
@@ -300,6 +300,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     Tooltip: ({ className, ...props }) => <Tooltip className={cn("", className)} {...props} />,
     TooltipTrigger: ({ className, ...props }) => <TooltipTrigger className={cn("", className)} {...props} />,
     TooltipContent: ({ className, ...props }) => <TooltipContent className={cn("", className)} {...props} />,
+    TooltipProvider: ({ className, ...props }) => <TooltipProvider className={cn("", className)} {...props} />,
     Accordion: ({ className, ...props }) => <Accordion className={cn("my-6", className)} {...props} />,
     AccordionItem: ({ className, ...props }) => <AccordionItem className={cn("", className)} {...props} />,
     AccordionTrigger: ({ className, ...props }) => <AccordionTrigger className={cn("", className)} {...props} />,

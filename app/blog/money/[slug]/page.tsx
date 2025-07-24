@@ -17,7 +17,7 @@ export const dynamic = 'force-static'
 export const revalidate = false
 
 export async function generateStaticParams() {
-  const slugs = getPostSlugsByCategory('travel')
+  const slugs = getPostSlugsByCategory('money')
   return slugs.map(slug => ({ slug }))
 }
 
@@ -37,17 +37,17 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       : `${baseUrl}/og?title=${encodeURIComponent(title)}`
 
     return {
-      title: `${title} - Travel Blog`,
+      title: `${title} - Money Matters Blog`,
       description,
       alternates: {
-        canonical: `${baseUrl}/blog/travel/${post.slug}`,
+        canonical: `${baseUrl}/blog/money/${post.slug}`,
       },
       openGraph: {
         title,
         description,
         type: 'article',
         publishedTime: date,
-        url: `${baseUrl}/blog/travel/${post.slug}`,
+        url: `${baseUrl}/blog/money/${post.slug}`,
         images: [
           {
             url: ogImage,
@@ -69,7 +69,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
-export default async function TravelBlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function MoneyBlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   try {
     const resolvedParams = await params
     const post = await getPostBySlug(resolvedParams.slug)
@@ -79,8 +79,8 @@ export default async function TravelBlogPostPage({ params }: { params: Promise<{
       notFound()
     }
 
-    // Verify this is actually a travel post - if not, show 404
-    if (post.frontMatter.category !== 'travel') {
+    // Verify this is actually a money post - if not, show 404
+    if (post.frontMatter.category !== 'money') {
       notFound()
     }
 
@@ -96,7 +96,7 @@ export default async function TravelBlogPostPage({ params }: { params: Promise<{
       dateModified: post.frontMatter.date,
       description: post.frontMatter.description,
       image: postImage,
-      url: `${baseUrl}/blog/travel/${post.slug}`,
+      url: `${baseUrl}/blog/money/${post.slug}`,
       author: {
         '@type': 'Person',
         name: 'Kaivlya',
@@ -112,10 +112,10 @@ export default async function TravelBlogPostPage({ params }: { params: Promise<{
       },
       mainEntityOfPage: {
         '@type': 'WebPage',
-        '@id': `${baseUrl}/blog/travel/${post.slug}`,
+        '@id': `${baseUrl}/blog/money/${post.slug}`,
       },
       keywords: post.frontMatter.tags || [],
-      articleSection: 'Travel',
+      articleSection: 'Money Matters',
       inLanguage: 'en-US',
     }
 
@@ -131,16 +131,16 @@ export default async function TravelBlogPostPage({ params }: { params: Promise<{
 
         <article className="container max-w-3xl py-12">
           <Button asChild variant="ghost" className="mb-8 -ml-4 gap-1 group">
-            <Link href="/blog/travel">
+            <Link href="/blog/money">
               <ArrowLeft className="h-4 w-4 mr-2 group-hover:translate-x-[-2px] transition-transform" />
-              Back to Travel Blog
+              Back to Money Matters Blog
             </Link>
           </Button>
 
           <div className="space-y-8">
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                <Badge variant="outline">Travel</Badge>
+                <Badge variant="outline">Money Matters</Badge>
                 {/* Add tier badge next to category */}
                 {post.frontMatter.tier && getTierBadge(post.frontMatter.tier)}
               </div>
@@ -182,7 +182,7 @@ export default async function TravelBlogPostPage({ params }: { params: Promise<{
               <div className="flex flex-col gap-2 pt-4">
                 <h4 className="text-sm font-medium text-muted-foreground">Share this post</h4>
                 <ShareButtons 
-                  url={`${baseUrl}/blog/travel/${post.slug}`}
+                  url={`${baseUrl}/blog/money/${post.slug}`}
                   title={post.frontMatter.title}
                   description={post.frontMatter.description}
                 />
@@ -200,7 +200,7 @@ export default async function TravelBlogPostPage({ params }: { params: Promise<{
       </>
     )
   } catch (error) {
-    console.error('Error in TravelBlogPostPage:', error)
+    console.error('Error in MoneyBlogPostPage:', error)
     notFound()
   }
 } 

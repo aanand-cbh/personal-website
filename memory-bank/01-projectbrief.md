@@ -1,5 +1,10 @@
 # Project Brief: Personal Website
 
+## Current Date
+**Today**: July 24, 2025
+
+*Note: This date should be updated at the start of each new session to reflect the current date.*
+
 ## Project Overview
 A modern, professional personal website serving as a digital hub for knowledge sharing, blogging, and resource curation. Built with Next.js 15 and designed for optimal performance, SEO, and user experience.
 
@@ -44,4 +49,22 @@ A modern, professional personal website serving as a digital hub for knowledge s
 - Must be maintainable by a single developer
 - Content-first approach with minimal complexity
 - SEO and performance are non-negotiable
-- Must handle future content scaling gracefully 
+- Must handle future content scaling gracefully
+
+## Memory Bank Verification
+After reading this file, I should be able to answer:
+- What is the project's core purpose and scope?
+- Who is the target audience?
+- What are the key features and success metrics?
+
+If I cannot answer these questions confidently, I have not read this file properly.
+
+## Memory Bank Reading Reminder
+**CRITICAL**: This is file 01 of 06. I must also read:
+- 02-productContext.md (Why this project exists and how it should work)
+- 03-systemPatterns.md (Technical architecture and design patterns)
+- 04-techContext.md (Technology stack and development setup)
+- 05-activeContext.md (Current work focus and recent changes)
+- 06-progress.md (What works and what's left to build)
+
+Only proceed with tasks after reading ALL numbered files (01-06) in order. 

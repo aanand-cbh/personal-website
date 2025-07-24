@@ -8,7 +8,8 @@
     "validate-resources": "ts-node scripts/validateResources.ts",
     "build": "npm run validate-mdx && npm run validate-resources && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "update-date": "./scripts/update-date.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

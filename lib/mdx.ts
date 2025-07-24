@@ -244,6 +244,30 @@ export async function getPostsByCategory(category: string): Promise<Post[]> {
   }
 }
 
+// Get post slugs for a specific category (useful for generateStaticParams)
+export function getPostSlugsByCategory(category: string): string[] {
+  try {
+    const categoryPath = path.join(postsDirectory, category)
+    
+    // Check if category directory exists
+    if (!fs.existsSync(categoryPath)) {
+      console.warn(`Category directory not found: ${category}`)
+      return []
+    }
+    
+    // Get slugs only from this category
+    const categoryFiles = fs
+      .readdirSync(categoryPath)
+      .filter((file) => file.endsWith(".mdx") || file.endsWith(".md"))
+      .map((file) => file.replace(/\.mdx?$/, ""))
+    
+    return categoryFiles
+  } catch (error) {
+    console.error(`Error getting slugs for category ${category}:`, error)
+    return []
+  }
+}
+
 // Get posts metadata without serializing content (useful for RSS, sitemaps, etc.)
 export async function getPostsMetadata(): Promise<Omit<Post, 'content'>[]> {
   try {

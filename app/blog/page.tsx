@@ -1,5 +1,5 @@
 import Fuse from "fuse.js";
-import { Calendar, Code2, Heart, Plane, Tag, Users, X } from "lucide-react";
+import { Calendar, Code2, Heart, Plane, Tag, Users, X, IndianRupee } from "lucide-react";
 import Link from "next/link";
 
 
@@ -82,6 +82,13 @@ export default async function BlogPage({
       description: 'Personal stories, life lessons, and reflections',
       icon: Users,
       color: 'from-orange-500 to-red-500'
+    },
+    {
+      slug: 'money',
+      title: 'Money Matters',
+      description: 'Personal finance, investing, and financial literacy',
+      icon: IndianRupee,
+      color: 'from-green-600 to-emerald-500'
     }
   ];
 

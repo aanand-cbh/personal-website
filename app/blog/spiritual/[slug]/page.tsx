@@ -8,7 +8,7 @@ import { ShareButtons } from "@/components/share-buttons"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { getPostBySlug, getPostSlugs } from "@/lib/mdx"
+import { getPostBySlug, getPostSlugsByCategory } from "@/lib/mdx"
 import { formatDate, getBaseUrl } from "@/lib/utils"
 
 const baseUrl = getBaseUrl();
@@ -17,27 +17,8 @@ export const dynamic = 'force-static'
 export const revalidate = false
 
 export async function generateStaticParams() {
-  try {
-    const posts = getPostSlugs()
-    // Get all posts and filter for spiritual category only
-    const allPosts = await Promise.all(
-      posts.map(async (slug) => {
-        const post = await getPostBySlug(slug)
-        return post
-      })
-    )
-    
-    // Only return slugs for spiritual posts
-    const spiritualPosts = allPosts
-      .filter((post): post is NonNullable<typeof post> => post !== null)
-      .filter(post => post.frontMatter.category === 'spiritual')
-      .map(post => ({ slug: post.slug }))
-    
-    return spiritualPosts
-  } catch (error) {
-    console.error('Error generating static params:', error)
-    return []
-  }
+  const slugs = getPostSlugsByCategory('spiritual')
+  return slugs.map(slug => ({ slug }))
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
