@@ -1,28 +1,73 @@
 import fs from "fs"
-import matter from "gray-matter"
-import { serialize } from 'next-mdx-remote/serialize'
 import path from "path"
-import remarkGfm from 'remark-gfm'
+import matter from "gray-matter"
+import { serialize } from "next-mdx-remote/serialize"
+import remarkGfm from "remark-gfm"
 
-// Define the Post type
-export type Post = {
-  slug: string
-  frontMatter: {
-    title: string
-    date: string
-    description: string
-    category?: string
-    tier?: 'reference' | 'revisit' | 'read'
-    readTime?: string
-    tags?: string[]
-    clientSide?: boolean
-    [key: string]: any
-  }
-  content: any // Changed from string to any to accommodate serialized content
+// Define the posts directory
+const postsDirectory = path.join(process.cwd(), "content/blog")
+
+// Calculate reading time based on content length
+function calculateReadTime(content: string): string {
+  const wordsPerMinute = 200
+  const wordCount = content.split(/\s+/).length
+  const minutes = Math.ceil(wordCount / wordsPerMinute)
+  return `${minutes} min read`
 }
 
-// Define the directory where blog posts are stored
-const postsDirectory = path.join(process.cwd(), "content/blog")
+// Interface for post frontmatter
+export interface PostFrontMatter {
+  title: string
+  date: string
+  description: string
+  category: string
+  tier?: string
+  tags: string[]
+  readTime: string
+  clientSide: boolean
+  image?: string
+  schemas?: any[]
+  [key: string]: any
+}
+
+// Interface for a complete post
+export interface Post {
+  slug: string
+  frontMatter: PostFrontMatter
+  content: any
+}
+
+// Function to strip numeric prefix from slug
+export function getCleanSlug(fullSlug: string): string {
+  const numericPrefixPattern = /^\d+\.\d+-/
+  return fullSlug.replace(numericPrefixPattern, '')
+}
+
+// Function to get full slug from clean slug (searches across all categories)
+export function getFullSlugFromCleanSlug(cleanSlug: string): string | null {
+  try {
+    const categories = getCategories()
+    
+    for (const category of categories) {
+      const categoryPath = path.join(postsDirectory, category)
+      const files = fs
+        .readdirSync(categoryPath)
+        .filter((file) => file.endsWith(".mdx") || file.endsWith(".md"))
+        .map((file) => file.replace(/\.mdx?$/, ""))
+      
+      // Find the file that matches the clean slug
+      const matchingFile = files.find(file => getCleanSlug(file) === cleanSlug)
+      if (matchingFile) {
+        return matchingFile
+      }
+    }
+    
+    return null
+  } catch (error) {
+    console.error("Error finding full slug from clean slug:", error)
+    return null
+  }
+}
 
 // Get all available categories
 function getCategories(): string[] {
@@ -37,7 +82,7 @@ function getCategories(): string[] {
   }
 }
 
-// Get all post slugs from all categories
+// Get all post slugs from all categories (returns clean slugs)
 export function getPostSlugs(): string[] {
   try {
     const categories = getCategories()
@@ -50,7 +95,9 @@ export function getPostSlugs(): string[] {
         .filter((file) => file.endsWith(".mdx") || file.endsWith(".md"))
         .map((file) => file.replace(/\.mdx?$/, ""))
       
-      allSlugs.push(...files)
+      // Convert to clean slugs
+      const cleanSlugs = files.map(file => getCleanSlug(file))
+      allSlugs.push(...cleanSlugs)
     }
     
     return allSlugs
@@ -60,16 +107,21 @@ export function getPostSlugs(): string[] {
   }
 }
 
-// Get post data by slug (searches across all categories)
-export async function getPostBySlug(slug: string): Promise<Post | null> {
+// Get post data by clean slug (searches across all categories)
+export async function getPostBySlug(cleanSlug: string): Promise<Post | null> {
   try {
+    const fullSlug = getFullSlugFromCleanSlug(cleanSlug)
+    if (!fullSlug) {
+      return null
+    }
+
     const categories = getCategories()
     
     // Search for the file in each category directory
     for (const category of categories) {
       const categoryPath = path.join(postsDirectory, category)
-      const fullPath = path.join(categoryPath, `${slug}.mdx`)
-      const fallbackPath = path.join(categoryPath, `${slug}.md`)
+      const fullPath = path.join(categoryPath, `${fullSlug}.mdx`)
+      const fallbackPath = path.join(categoryPath, `${fullSlug}.md`)
 
       let filePath: string | null = null
       if (fs.existsSync(fullPath)) {
@@ -110,7 +162,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
             parseFrontmatter: false,
           })
         } catch (serializeError) {
-          console.error(`Error serializing MDX content for ${slug}:`, serializeError)
+          console.error(`Error serializing MDX content for ${cleanSlug}:`, serializeError)
           // Return a basic serialized structure if serialization fails
           serializedContent = {
             compiledSource: '',
@@ -120,7 +172,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
         }
 
         const post = {
-          slug,
+          slug: cleanSlug, // Use clean slug for consistency
           frontMatter,
           content: serializedContent
         }
@@ -132,20 +184,20 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     // File not found in any category
     return null
   } catch (error) {
-    console.error(`Error getting post by slug ${slug}:`, error)
+    console.error(`Error getting post by slug ${cleanSlug}:`, error)
     return null
   }
 }
 
-// Get all posts with their data
+// Get all posts (returns posts with clean slugs)
 export async function getAllPosts(): Promise<Post[]> {
   const slugs = getPostSlugs()
   const posts = await Promise.all(
     slugs.map(async (slug) => {
-      const post = await getPostBySlug(slug)
-      return post
+      return await getPostBySlug(slug)
     })
   )
+
   const filteredPosts = posts
     .filter((post): post is Post => post !== null)
     .sort((post1, post2) => 
@@ -154,7 +206,7 @@ export async function getAllPosts(): Promise<Post[]> {
   return filteredPosts
 }
 
-// Get posts for a specific category (optimized)
+// Get posts for a specific category (optimized, returns clean slugs)
 export async function getPostsByCategory(category: string): Promise<Post[]> {
   try {
     const categoryPath = path.join(postsDirectory, category)
@@ -173,9 +225,10 @@ export async function getPostsByCategory(category: string): Promise<Post[]> {
     
     // Load posts only from this category
     const posts = await Promise.all(
-      categoryFiles.map(async (slug) => {
-        const filePath = path.join(categoryPath, `${slug}.mdx`)
-        const fallbackPath = path.join(categoryPath, `${slug}.md`)
+      categoryFiles.map(async (fullSlug) => {
+        const cleanSlug = getCleanSlug(fullSlug)
+        const filePath = path.join(categoryPath, `${fullSlug}.mdx`)
+        const fallbackPath = path.join(categoryPath, `${fullSlug}.md`)
         
         let actualPath: string
         if (fs.existsSync(filePath)) {
@@ -217,7 +270,7 @@ export async function getPostsByCategory(category: string): Promise<Post[]> {
             parseFrontmatter: false,
           })
         } catch (serializeError) {
-          console.error(`Error serializing MDX content for ${slug}:`, serializeError)
+          console.error(`Error serializing MDX content for ${cleanSlug}:`, serializeError)
           serializedContent = {
             compiledSource: '',
             frontmatter: {},
@@ -226,7 +279,7 @@ export async function getPostsByCategory(category: string): Promise<Post[]> {
         }
 
         return {
-          slug,
+          slug: cleanSlug, // Use clean slug for consistency
           frontMatter,
           content: serializedContent
         } as Post
@@ -244,7 +297,7 @@ export async function getPostsByCategory(category: string): Promise<Post[]> {
   }
 }
 
-// Get post slugs for a specific category (useful for generateStaticParams)
+// Get post slugs for a specific category (returns clean slugs, useful for generateStaticParams)
 export function getPostSlugsByCategory(category: string): string[] {
   try {
     const categoryPath = path.join(postsDirectory, category)
@@ -261,14 +314,15 @@ export function getPostSlugsByCategory(category: string): string[] {
       .filter((file) => file.endsWith(".mdx") || file.endsWith(".md"))
       .map((file) => file.replace(/\.mdx?$/, ""))
     
-    return categoryFiles
+    // Convert to clean slugs
+    return categoryFiles.map(file => getCleanSlug(file))
   } catch (error) {
     console.error(`Error getting slugs for category ${category}:`, error)
     return []
   }
 }
 
-// Get posts metadata without serializing content (useful for RSS, sitemaps, etc.)
+// Get posts metadata without serializing content (returns clean slugs, useful for RSS, sitemaps, etc.)
 export async function getPostsMetadata(): Promise<Omit<Post, 'content'>[]> {
   try {
     const categories = getCategories()
@@ -289,9 +343,10 @@ export async function getPostsMetadata(): Promise<Omit<Post, 'content'>[]> {
         .map((file) => file.replace(/\.mdx?$/, ""))
       
       // Load posts metadata only from this category
-      for (const slug of categoryFiles) {
-        const filePath = path.join(categoryPath, `${slug}.mdx`)
-        const fallbackPath = path.join(categoryPath, `${slug}.md`)
+      for (const fullSlug of categoryFiles) {
+        const cleanSlug = getCleanSlug(fullSlug)
+        const filePath = path.join(categoryPath, `${fullSlug}.mdx`)
+        const fallbackPath = path.join(categoryPath, `${fullSlug}.md`)
         
         let actualPath: string
         if (fs.existsSync(filePath)) {
@@ -323,7 +378,7 @@ export async function getPostsMetadata(): Promise<Omit<Post, 'content'>[]> {
         }
 
         allPosts.push({
-          slug,
+          slug: cleanSlug, // Use clean slug for consistency
           frontMatter
         })
       }
@@ -336,12 +391,4 @@ export async function getPostsMetadata(): Promise<Omit<Post, 'content'>[]> {
     console.error("Error getting posts metadata:", error)
     return []
   }
-}
-
-// Helper function to calculate read time
-function calculateReadTime(content: string): string {
-  const wordsPerMinute = 175
-  const wordCount = content.split(/\s+/).length
-  const readTime = Math.ceil(wordCount / wordsPerMinute)
-  return `${readTime} min read`
 }

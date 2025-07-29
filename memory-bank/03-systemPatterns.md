@@ -97,6 +97,7 @@ const serializedContent = await serialize(content, options)
 - **Spiritual**: `30` (Spirituality & Philosophy)
 - **Money**: `40` (Finance & Money Matters)
 - **Personal**: `50` (Personal Stories & Life)
+- **Tooling**: `70` (Tooling & Utilities)
 - **Health**: `60` (Health & Wellness) - Future category
 
 ### 5. MDX Hydration Error Prevention Pattern
@@ -149,8 +150,8 @@ content/blog/tech/
 ├── 10.0002-favorite-resources.mdx
 ├── 10.0003-interactive-shadcn-components.mdx
 ├── 10.0004-understanding-react-hydration-errors.mdx
-├── 10.0005-cursor-memory-bank.mdx
-└── 10.0006-learning-nextjs.mdx
+├── 10.0006-cursor-memory-bank.mdx
+└── 10.0007-learning-nextjs.mdx
 
 content/blog/travel/
 ├── 20.0001-places-to-visit-near-hyderabad.mdx
@@ -161,6 +162,9 @@ content/blog/spiritual/
 
 content/blog/money/
 └── 40.0001-triple-witching-hour-explained.mdx
+
+content/blog/tooling/
+└── 70.0001-how-to-add-compress-with-caesium.mdx
 ```
 
 **Benefits**:
@@ -185,7 +189,27 @@ content/blog/money/
 - Maintain redirects if needed
 - Update memory bank documentation
 
-### 6. Blog Post Creation Protocol
+### 6. Clean URL System
+**Purpose**: Provides user-friendly URLs while maintaining file system organization
+
+**URL Transformation**:
+- **File System**: `20.0001-places-to-visit-near-hyderabad.mdx`
+- **User URL**: `/blog/travel/places-to-visit-near-hyderabad`
+- **Breadcrumb Display**: "Places To Visit Near Hyderabad"
+
+**Implementation**:
+- **`getCleanSlug()`**: Strips numeric prefix from filename
+- **`getFullSlugFromCleanSlug()`**: Maps clean slug back to full filename
+- **Bidirectional Mapping**: Maintains compatibility between file system and URLs
+
+**Benefits**:
+- **SEO Optimized**: Clean URLs improve search rankings
+- **User Friendly**: Professional, readable URLs
+- **File Organization**: Maintains Johnny.Decimal system for sorting
+- **Scalable**: Works for all existing and future posts
+- **Backward Compatible**: All existing functionality preserved
+
+### 7. Blog Post Creation Protocol
 **MANDATORY**: This protocol must be followed for every new blog post to ensure consistent quality, SEO optimization, and optimal UI/UX.
 
 #### Step 1: UI Component Analysis
@@ -663,7 +687,7 @@ memory-bank/   # Project documentation
 
 ### Adding a New Category (Step-by-Step)
 
-Thanks to the CategoryBlogPage refactor, adding new categories is now streamlined. Here's the complete process:
+Thanks to the CategoryBlogPage refactor, adding new categories is now streamlined. Here's the complete process with **CRITICAL ERROR PREVENTION**:
 
 #### 1. Add Category Metadata to Main Blog Page
 Update `app/blog/page.tsx` categories array:
@@ -671,76 +695,267 @@ Update `app/blog/page.tsx` categories array:
 const categories = [
   // ... existing categories
   {
-    title: "Health & Wellness",
-    description: "Physical health, mental wellbeing, and lifestyle optimization",
-    icon: Heart, // Import from lucide-react
-    href: "/blog/health",
-    gradient: "from-pink-500 to-red-500",
-    posts: healthPosts.length
+    slug: 'newcategory',
+    title: 'New Category Name',
+    description: 'Category description',
+    icon: NewIcon, // Import from lucide-react
+    color: 'from-color1-500 to-color2-500'
   }
 ]
 ```
 
-#### 2. Create Category Page
-Create `app/blog/health/page.tsx`:
+**CRITICAL**: Import the icon at the top of the file:
 ```typescript
-import { CategoryBlogPage } from "@/components/category-blog-page"
+import { Calendar, Code2, Heart, IndianRupee, Plane, Tag, Users, X, Wrench, NewIcon } from "lucide-react";
+```
 
-export default function HealthBlog({ searchParams }: { searchParams: { q?: string } }) {
-  return (
-    <CategoryBlogPage
-      category="health"
-      title="Health & Wellness"
-      description="Physical health, mental wellbeing, and lifestyle optimization"
-      searchPlaceholder="Search health posts..."
-      searchParams={searchParams}
-    />
-  )
-}
+#### 2. Create Category Page
+Create `app/blog/newcategory/page.tsx`:
+```typescript
+import { CategoryBlogPage } from "@/components/category-blog-page";
+import { getBaseUrl } from "@/lib/utils";
+
+const baseUrl = getBaseUrl();
 
 export const metadata = {
-  title: "Health & Wellness Blog",
-  description: "Physical health, mental wellbeing, and lifestyle optimization"
+  title: "New Category - Blog",
+  description: "Category description.",
+  openGraph: {
+    title: "New Category - Blog",
+    description: "Category description.",
+    type: "website",
+    url: `${baseUrl}/blog/newcategory`,
+  },
+};
+
+export default async function NewCategoryBlogPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ q?: string }>;
+}) {
+  const resolvedSearchParams = await searchParams;
+  
+  return (
+    <CategoryBlogPage
+      category="newcategory"
+      title="New Category"
+      description="Category description."
+      searchPlaceholder="Search newcategory posts..."
+      searchParams={resolvedSearchParams}
+    />
+  );
 }
 ```
 
-#### 3. Create Individual Post Route
-Create `app/blog/health/[slug]/page.tsx`:
+#### 3. Create Individual Post Route (CRITICAL PATTERN)
+Create `app/blog/newcategory/[slug]/page.tsx` using the **EXACT PATTERN** from existing categories:
+
 ```typescript
-import { getPostBySlug, getPostSlugs } from "@/lib/mdx"
-import { MDXContent } from "@/components/mdx-content"
+import { ArrowLeft, Calendar, Tag } from "lucide-react"
+import Link from "next/link"
 import { notFound } from "next/navigation"
 
-interface PageProps {
-  params: { slug: string }
-}
+import { getTierBadge } from "@/components/blog-utils"
+import { MDXWrapper } from "@/components/mdx-wrapper"
+import { ShareButtons } from "@/components/share-buttons"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
+import { getPostBySlug, getPostSlugsByCategory } from "@/lib/mdx"
+import { formatDate, getBaseUrl } from "@/lib/utils"
+
+const baseUrl = getBaseUrl();
+
+export const dynamic = 'force-static'
+export const revalidate = false
 
 export async function generateStaticParams() {
-  const posts = await getPostSlugs()
-  return posts
-    .filter(post => post.frontMatter.category === "health")
-    .map(post => ({ slug: post.slug }))
+  const slugs = getPostSlugsByCategory('newcategory')
+  return slugs.map(slug => ({ slug }))
 }
 
-export async function generateMetadata({ params }: PageProps) {
-  const post = await getPostBySlug(params.slug)
-  if (!post || post.frontMatter.category !== "health") return {}
-  
-  return {
-    title: post.frontMatter.title,
-    description: post.frontMatter.description,
-    // ... additional metadata
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  try {
+    const resolvedParams = await params
+    const post = await getPostBySlug(resolvedParams.slug)
+    if (!post) {
+      return {
+        title: 'Post Not Found',
+      }
+    }
+
+    const { title, description, date } = post.frontMatter
+    const ogImage = post.frontMatter.image 
+      ? post.frontMatter.image 
+      : `${baseUrl}/og?title=${encodeURIComponent(title)}`
+
+    return {
+      title: `${title} - New Category Blog`,
+      description,
+      alternates: {
+        canonical: `${baseUrl}/blog/newcategory/${post.slug}`,
+      },
+      openGraph: {
+        title,
+        description,
+        type: 'article',
+        publishedTime: date,
+        url: `${baseUrl}/blog/newcategory/${post.slug}`,
+        images: [
+          {
+            url: ogImage,
+          },
+        ],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images: [ogImage],
+      },
+    }
+  } catch (error) {
+    console.error('Error generating metadata:', error)
+    return {
+      title: 'Post Not Found',
+    }
   }
 }
 
-export default async function HealthPostPage({ params }: PageProps) {
-  const post = await getPostBySlug(params.slug)
-  
-  if (!post || post.frontMatter.category !== "health") {
+export default async function NewCategoryBlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+  try {
+    const resolvedParams = await params
+    const post = await getPostBySlug(resolvedParams.slug)
+
+    if (!post) {
+      console.log(`Post not found for slug: ${resolvedParams.slug}`)
+      notFound()
+    }
+
+    // Verify this is actually a newcategory post - if not, show 404
+    if (post.frontMatter.category !== 'newcategory') {
+      notFound()
+    }
+
+    const postImage = post.frontMatter.image
+      ? `${baseUrl}${post.frontMatter.image}`
+      : `${baseUrl}/og?title=${encodeURIComponent(post.frontMatter.title)}`
+
+    const blogPostingSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: post.frontMatter.title,
+      datePublished: post.frontMatter.date,
+      dateModified: post.frontMatter.date,
+      description: post.frontMatter.description,
+      image: postImage,
+      url: `${baseUrl}/blog/newcategory/${post.slug}`,
+      author: {
+        '@type': 'Person',
+        name: 'Kaivlya',
+        url: baseUrl,
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Kaivlya',
+        logo: {
+          '@type': 'ImageObject',
+          url: `${baseUrl}/icons/icon.svg`,
+        },
+      },
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': `${baseUrl}/blog/newcategory/${post.slug}`,
+      },
+      keywords: post.frontMatter.tags || [],
+      articleSection: 'New Category',
+      inLanguage: 'en-US',
+    }
+
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(blogPostingSchema),
+          }}
+        />
+
+        <article className="container max-w-3xl py-12">
+          <Button asChild variant="ghost" className="mb-8 -ml-4 gap-1 group">
+            <Link href="/blog/newcategory">
+              <ArrowLeft className="h-4 w-4 mr-2 group-hover:translate-x-[-2px] transition-transform" />
+              Back to New Category Blog
+            </Link>
+          </Button>
+
+          <div className="space-y-8">
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                <Badge variant="outline">New Category</Badge>
+                {/* Add tier badge next to category */}
+                {post.frontMatter.tier && getTierBadge(post.frontMatter.tier)}
+              </div>
+              
+              <h1 className="text-3xl font-bold tracking-tighter">
+                {post.frontMatter.title}
+              </h1>
+              
+              <div className="flex flex-col gap-3 text-sm text-muted-foreground">
+                {/* Date and reading time - always on top, never compressed */}
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-4 w-4" />
+                    <span>{formatDate(post.frontMatter.date)}</span>
+                  </div>
+                  <span>•</span>
+                  <span>{post.frontMatter.readTime}</span>
+                </div>
+
+                {/* Tags - separate row that can wrap freely */}
+                {post.frontMatter.tags && Array.isArray(post.frontMatter.tags) && post.frontMatter.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {post.frontMatter.tags.map((tag: string) => (
+                      <Badge key={tag} variant="secondary" className="flex items-center gap-1">
+                        <Tag className="h-3 w-3" />
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {post.frontMatter.description && (
+                <p className="text-muted-foreground text-lg">
+                  {post.frontMatter.description}
+                </p>
+              )}
+              
+              <div className="flex flex-col gap-2 pt-4">
+                <h4 className="text-sm font-medium text-muted-foreground">Share this post</h4>
+                <ShareButtons 
+                  url={`${baseUrl}/blog/newcategory/${post.slug}`}
+                  title={post.frontMatter.title}
+                  description={post.frontMatter.description}
+                />
+              </div>
+            </div>
+
+            <Separator />
+
+            <MDXWrapper 
+              source={post.content} 
+              clientSide={post.frontMatter.clientSide === true}
+            />
+          </div>
+        </article>
+      </>
+    )
+  } catch (error) {
+    console.error('Error in NewCategoryBlogPostPage:', error)
     notFound()
   }
-
-  return <MDXContent post={post} />
 }
 ```
 
@@ -748,18 +963,17 @@ export default async function HealthPostPage({ params }: PageProps) {
 In MDX files, include the category in frontmatter:
 ```yaml
 ---
-title: "Your Health Post Title"
+title: "Your Post Title"
 date: "2025-07-18"
 description: "Post description"
-category: "health"
-tags: ["wellness", "fitness"]
+category: "newcategory"
+tags: ["tag1", "tag2"]
 ---
 ```
 
-#### 5. Import Icon (if needed)
-Add new icon import to `app/blog/page.tsx`:
-```typescript
-import { Heart, Code2, Plane } from "lucide-react"
+#### 5. Create Content Directory
+```bash
+mkdir -p content/blog/newcategory
 ```
 
 #### Key Benefits of This Process
@@ -772,12 +986,132 @@ import { Heart, Code2, Plane } from "lucide-react"
 
 #### Post-Creation Checklist
 1. ✅ Category metadata added to main blog page
-2. ✅ Category page created with CategoryBlogPage component
-3. ✅ Individual post route with proper filtering
-4. ✅ First post created with correct category field
-5. ✅ Icon imported and styled
-6. ✅ Build successful with `npm run build`
-7. ✅ Routes accessible and search functional 
+2. ✅ Icon imported correctly in main blog page
+3. ✅ Category page created with CategoryBlogPage component
+4. ✅ Individual post route with EXACT pattern from existing categories
+5. ✅ Content directory created
+6. ✅ First post created with correct category field
+7. ✅ Build successful with `npm run build`
+8. ✅ Routes accessible and search functional
+
+### Category Addition Error Prevention Guide
+
+**CRITICAL**: The following errors were encountered during Personal and Tooling category implementation. This guide prevents future occurrences.
+
+#### Error 1: generateStaticParams Function Issues
+**Problem**: 
+```
+TypeError: Cannot read properties of undefined (reading 'category')
+```
+
+**Root Cause**: Using `getPostSlugs()` instead of `getPostSlugsByCategory()`
+
+**Incorrect Implementation**:
+```typescript
+// ❌ WRONG - Causes build errors
+export async function generateStaticParams() {
+  const posts = await getPostSlugs();
+  return posts
+    .filter(post => post.frontMatter.category === "newcategory")
+    .map(post => ({ slug: post.slug }));
+}
+```
+
+**Correct Implementation**:
+```typescript
+// ✅ CORRECT - Uses optimized category function
+export async function generateStaticParams() {
+  const slugs = getPostSlugsByCategory('newcategory')
+  return slugs.map(slug => ({ slug }))
+}
+```
+
+#### Error 2: MDX Rendering Component Issues
+**Problem**:
+```
+TypeError: Cannot read properties of undefined (reading 'default')
+```
+
+**Root Cause**: Using `MDXContent` component instead of `MDXWrapper`
+
+**Incorrect Implementation**:
+```typescript
+// ❌ WRONG - Causes rendering errors
+import { MDXContent } from "@/components/mdx-content";
+return <MDXContent post={post} />;
+```
+
+**Correct Implementation**:
+```typescript
+// ✅ CORRECT - Uses proper MDX wrapper
+import { MDXWrapper } from "@/components/mdx-wrapper"
+<MDXWrapper 
+  source={post.content} 
+  clientSide={post.frontMatter.clientSide === true}
+/>
+```
+
+#### Error 3: Icon Import Issues
+**Problem**:
+```
+Cannot find name 'NewIcon'. Did you mean 'ExistingIcon'?
+```
+
+**Root Cause**: Forgetting to import new icons in main blog page
+
+**Prevention**: Always add icon import to `app/blog/page.tsx`:
+```typescript
+import { Calendar, Code2, Heart, IndianRupee, Plane, Tag, Users, X, Wrench, NewIcon } from "lucide-react";
+```
+
+#### Error 4: Incomplete Individual Post Route Pattern
+**Problem**: Build succeeds but pages don't render properly or lack functionality
+
+**Root Cause**: Not following the complete pattern from existing categories
+
+**Solution**: Copy the EXACT pattern from existing category pages (e.g., `app/blog/tech/[slug]/page.tsx`) and replace:
+- Category name references
+- URL paths
+- Badge labels
+- Back button text
+- Schema articleSection
+
+#### Error 5: Missing Content Directory
+**Problem**: Build succeeds but no posts appear in category
+
+**Root Cause**: Forgetting to create the content directory
+
+**Solution**: Always create the directory:
+```bash
+mkdir -p content/blog/newcategory
+```
+
+#### Error 6: Frontmatter Category Mismatch
+**Problem**: Posts don't appear in expected category
+
+**Root Cause**: Frontmatter category field doesn't match route category
+
+**Solution**: Ensure consistency:
+```yaml
+---
+category: "newcategory"  # Must match route category
+---
+```
+
+#### Verification Steps for New Categories
+1. **Build Test**: `npm run build` must complete without errors
+2. **Route Test**: Visit `/blog/newcategory` - should show category page
+3. **Post Test**: Visit `/blog/newcategory/post-slug` - should render post
+4. **Search Test**: Search functionality should work within category
+5. **Navigation Test**: Back buttons and breadcrumbs should work
+6. **SEO Test**: Check page source for proper meta tags and structured data
+
+#### Template Files for Quick Implementation
+**Category Page Template**: Copy `app/blog/tech/page.tsx` and modify
+**Individual Post Template**: Copy `app/blog/tech/[slug]/page.tsx` and modify
+**Main Blog Update**: Add to categories array in `app/blog/page.tsx`
+
+**Remember**: The CategoryBlogPage component handles most complexity automatically. Focus on the individual post route pattern - that's where most errors occur. 
 
 ## Component Best Practices
 
@@ -822,9 +1156,11 @@ import { Heart, Code2, Plane } from "lucide-react"
 
 ```markdown
 # CRITICAL: Project Protocol
-1. FIRST: Read ALL files in memory-bank/ directory
-2. THEN: Proceed with task using that context
-3. ALWAYS: Update memory bank after significant changes
+1. FIRST: Run `npm run update-date` to ensure current date
+2. SECOND: Read ALL files in memory-bank/ directory
+3. THIRD: Verify date consistency across all files
+4. FOURTH: Proceed with task using that context
+5. ALWAYS: Update memory bank after significant changes
 
 # Cursor's Memory Bank
 

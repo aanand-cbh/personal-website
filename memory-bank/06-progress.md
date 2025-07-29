@@ -68,10 +68,12 @@
 
 ### Content Status
 - **Published Posts**: 12 blog posts across categories
-- **Categories Active**: Tech (8 posts), Travel (1 post), Spiritual (2 posts), Money (1 post)
+- **Categories Active**: Tech (7 posts), Travel (1 post), Spiritual (2 posts), Money (1 post), Personal (0 posts), Tooling (1 post)
 - **Latest Addition**: "Triple Witching Hour: What It Is and Why It Matters" (July 18th, 2025)
+- **Content Reorganization**: Caesium post moved from tech to tooling category
 - **Content Pipeline**: MDX authoring workflow established
 - **File Organization**: All posts follow Johnny.Decimal naming convention
+- **Clean URLs**: All blog posts now use clean URLs without numeric prefixes
 
 ### Feature Completeness
 ```

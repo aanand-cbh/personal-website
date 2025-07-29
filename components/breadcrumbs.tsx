@@ -12,6 +12,24 @@ interface BreadcrumbItem {
   href: string
 }
 
+// Function to strip numeric prefix from blog post slugs
+function formatBreadcrumbLabel(segment: string, pathSegments: string[]): string {
+  // Check if this is a blog post slug (has numeric prefix pattern like "20.0001-")
+  const numericPrefixPattern = /^\d+\.\d+-/
+  
+  if (numericPrefixPattern.test(segment)) {
+    // Remove the numeric prefix and convert to readable format
+    const cleanSlug = segment.replace(numericPrefixPattern, '')
+    return cleanSlug
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+  }
+  
+  // For non-blog-post segments, just capitalize the first letter
+  return segment.charAt(0).toUpperCase() + segment.slice(1)
+}
+
 export function Breadcrumbs() {
   const pathname = usePathname()
 
@@ -21,7 +39,7 @@ export function Breadcrumbs() {
     .filter(Boolean)
     .reduce<BreadcrumbItem[]>((acc, segment, index, array) => {
       const href = `/${array.slice(0, index + 1).join('/')}`
-      const label = segment.charAt(0).toUpperCase() + segment.slice(1)
+      const label = formatBreadcrumbLabel(segment, array)
       acc.push({ label, href })
       return acc
     }, [])

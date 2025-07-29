@@ -9,7 +9,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Get all blog posts metadata
   const posts = await getPostsMetadata();
   
-  // Map blog posts to sitemap entries
+  // Map blog posts to sitemap entries (using clean slugs)
   const blogEntries = posts.map((post) => ({
     url: `${baseUrl}/blog/${post.frontMatter.category}/${post.slug}`,
     lastModified: new Date(post.frontMatter.date),

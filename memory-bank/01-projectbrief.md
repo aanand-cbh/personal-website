@@ -1,7 +1,7 @@
 # Project Brief: Personal Website
 
 ## Current Date
-**Today**: July 24, 2025
+**Today**: July 29, 2025
 
 *Note: This date should be updated at the start of each new session to reflect the current date.*
 
@@ -66,5 +66,7 @@ If I cannot answer these questions confidently, I have not read this file proper
 - 04-techContext.md (Technology stack and development setup)
 - 05-activeContext.md (Current work focus and recent changes)
 - 06-progress.md (What works and what's left to build)
+
+**DATE VERIFICATION**: Before reading any files, run `npm run update-date` to ensure current date.
 
 Only proceed with tasks after reading ALL numbered files (01-06) in order. 

@@ -6,7 +6,7 @@ export const dynamic = 'force-static'
 export const revalidate = false
 
 export async function generateStaticParams() {
-  const slugs = getPostSlugsByCategory('travel')
+  const slugs = getPostSlugsByCategory('tooling')
   return slugs.map(slug => ({ slug }))
 }
 
@@ -14,24 +14,24 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const resolvedParams = await params
   return generateBlogMetadata({
     slug: resolvedParams.slug,
-    categoryTitle: 'Travel Blog',
-    backLink: '/blog/travel',
-    category: 'travel'
+    categoryTitle: 'Developer Tools Blog',
+    backLink: '/blog/tooling',
+    category: 'tooling'
   })
 }
 
-export default async function TravelBlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ToolingBlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params
   
   return (
     <BlogPostPage
       slug={resolvedParams.slug}
-      category="travel"
-      categoryTitle="Travel Blog"
-      categoryDisplayName="Travel"
-      backLink="/blog/travel"
-      backLinkText="Back to Travel Blog"
-      articleSection="Travel"
+      category="tooling"
+      categoryTitle="Developer Tools Blog"
+      categoryDisplayName="Developer Tools"
+      backLink="/blog/tooling"
+      backLinkText="Back to Developer Tools Blog"
+      articleSection="Developer Tools"
     />
   )
 } 
