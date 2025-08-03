@@ -6,6 +6,7 @@ import type React from "react"
 import "./globals.css"
 
 import { ErrorBoundary } from "@/components/error-boundary"
+import { PerformanceMonitor } from "@/components/performance-monitor"
 import { QueryProvider } from "@/components/providers/query-provider"
 import { ScrollToTop } from "@/components/scroll-to-top"
 import { SiteFooter } from "@/components/site-footer"
@@ -109,100 +110,55 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              // Enhanced hydration safety - prevent browser extensions from causing hydration mismatches
+              // Prevent browser extensions from modifying DOM before hydration
               (function() {
-                // Store original methods
                 const originalSetAttribute = Element.prototype.setAttribute;
-                const originalClassNameDescriptor = Object.getOwnPropertyDescriptor(Element.prototype, 'className');
+                const originalClassNameSetter = Object.getOwnPropertyDescriptor(Element.prototype, 'className').set;
                 
-                // Override setAttribute to prevent browser extension modifications
                 Element.prototype.setAttribute = function(name, value) {
                   if (name === 'class' || name === 'className') {
-                    // Check if this is a browser extension modification
-                    if (typeof value === 'string') {
-                      const hasExtensionClass = /clutterFree_|clutter|extension_|cf_|darkreader|ublock|adblock/i.test(value);
-                      if (hasExtensionClass) {
-                        // Don't set the attribute if it's a browser extension modification
-                        return;
-                      }
+                    // Allow only specific classes or prevent modification
+                    if (typeof value === 'string' && !value.includes('cf_') && !value.includes('clutter')) {
+                      return originalSetAttribute.call(this, name, value);
                     }
+                    return;
                   }
                   return originalSetAttribute.call(this, name, value);
                 };
                 
-                // Override className setter to prevent browser extension modifications
-                Object.defineProperty(Element.prototype, 'className', {
-                  get: function() {
-                    return this.getAttribute('class') || '';
-                  },
-                  set: function(value) {
-                    if (typeof value === 'string') {
-                      // Check if this is a browser extension modification
-                      const hasExtensionClass = /clutterFree_|clutter|extension_|cf_|darkreader|ublock|adblock/i.test(value);
-                      if (!hasExtensionClass) {
-                        this.setAttribute('class', value);
+                if (originalClassNameSetter) {
+                  Object.defineProperty(Element.prototype, 'className', {
+                    set: function(value) {
+                      if (typeof value === 'string' && !value.includes('cf_') && !value.includes('clutter')) {
+                        return originalClassNameSetter.call(this, value);
                       }
-                    }
-                  },
-                  configurable: true
-                });
-                
-                // Enhanced cleanup function
-                function cleanupExtensionClasses() {
-                  const elements = document.querySelectorAll('*');
-                  elements.forEach(function(element) {
-                    if (element.className && typeof element.className === 'string') {
-                      const cleaned = element.className
-                        .replace(/\\bclutterFree_[^\\s]*/g, '')
-                        .replace(/\\bclutter[^\\s]*/g, '')
-                        .replace(/\\bextension_[^\\s]*/g, '')
-                        .replace(/\\bcf_[^\\s]*/g, '')
-                        .replace(/\\bdarkreader[^\\s]*/g, '')
-                        .replace(/\\bublock[^\\s]*/g, '')
-                        .replace(/\\badblock[^\\s]*/g, '')
-                        .replace(/\\s+/g, ' ')
-                        .trim();
-                      if (cleaned !== element.className) {
-                        element.setAttribute('class', cleaned);
-                      }
-                    }
+                    },
+                    get: Object.getOwnPropertyDescriptor(Element.prototype, 'className').get
                   });
-                }
-                
-                // Run cleanup at multiple intervals to catch all modifications
-                const cleanupIntervals = [0, 50, 100, 200, 500, 1000];
-                cleanupIntervals.forEach(delay => {
-                  setTimeout(cleanupExtensionClasses, delay);
-                });
-                
-                // Also run cleanup when DOM is ready
-                if (document.readyState === 'loading') {
-                  document.addEventListener('DOMContentLoaded', cleanupExtensionClasses);
-                } else {
-                  cleanupExtensionClasses();
                 }
                 
                 // Monitor for new elements and clean them
                 const observer = new MutationObserver(function(mutations) {
                   mutations.forEach(function(mutation) {
-                    if (mutation.type === 'childList') {
-                      mutation.addedNodes.forEach(function(node) {
-                        if (node.nodeType === Node.ELEMENT_NODE) {
-                          cleanupExtensionClasses();
-                        }
-                      });
+                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                      const target = mutation.target;
+                      if (target && target.className && (target.className.includes('cf_') || target.className.includes('clutter'))) {
+                        target.className = target.className.replace(/cf_[^\\s]*/g, '').replace(/clutter[^\\s]*/g, '').trim();
+                      }
                     }
                   });
                 });
                 
-                // Start observing when DOM is ready
-                if (document.readyState === 'loading') {
-                  document.addEventListener('DOMContentLoaded', function() {
-                    observer.observe(document.body, { childList: true, subtree: true });
-                  });
-                } else {
-                  observer.observe(document.body, { childList: true, subtree: true });
-                }
+                // Start observing after a short delay to catch all modifications
+                [0, 50, 100, 200, 500, 1000].forEach(delay => {
+                  setTimeout(() => {
+                    observer.observe(document.body, {
+                      attributes: true,
+                      attributeFilter: ['class'],
+                      subtree: true
+                    });
+                  }, delay);
+                });
               })();
             `,
           }}
@@ -230,6 +186,7 @@ export default function RootLayout({
                 <SiteFooter />
               </div>
               <Toaster />
+              <PerformanceMonitor />
               <Analytics />
               <SpeedInsights />
               <ScrollToTop />

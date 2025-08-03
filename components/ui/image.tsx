@@ -22,6 +22,10 @@ export function Image({ wrapperClassName, className, alt, ...props }: ImageProps
         )}
         onLoadingComplete={() => setIsLoading(false)}
         alt={alt}
+        priority={props.priority || false}
+        loading={props.loading || 'lazy'}
+        sizes={props.sizes || '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'}
+        quality={props.quality || 85}
         {...props}
       />
     </div>

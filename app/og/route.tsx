@@ -2,15 +2,18 @@ import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
 
+// Cache the font to avoid refetching on every request
+const interFont = fetch(
+  new URL('https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap', 'https://kaivlya.com')
+).then((res) => res.arrayBuffer())
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
     const title = searchParams.get('title') || 'My Blog'
     
-    // Font
-    const inter = await fetch(
-      new URL('https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap', request.url)
-    ).then((res) => res.arrayBuffer())
+    // Use cached font
+    const font = await interFont
 
     return new ImageResponse(
       (
@@ -72,6 +75,14 @@ export async function GET(request: Request) {
       {
         width: 1200,
         height: 630,
+        fonts: [
+          {
+            name: 'Inter',
+            data: font,
+            style: 'normal',
+            weight: 700,
+          },
+        ],
       }
     )
   } catch (error) {

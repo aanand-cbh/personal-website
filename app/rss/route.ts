@@ -1,10 +1,8 @@
-import { getPostsMetadata } from "@/lib/mdx";
-import { getBaseUrl } from "@/lib/utils";
+import { getPostsMetadata } from '@/lib/mdx';
+import { getBaseUrl } from '@/lib/utils';
 
-// Get base URL dynamically based on environment
-export const baseUrl = getBaseUrl();
+const baseUrl = getBaseUrl()
 
-// Helper function to escape XML special characters
 function escapeXml(unsafe: string): string {
   return unsafe
     .replace(/&/g, "&amp;")
@@ -14,8 +12,22 @@ function escapeXml(unsafe: string): string {
     .replace(/'/g, "&apos;");
 }
 
+// Cache posts metadata to avoid refetching
+let cachedPosts: Awaited<ReturnType<typeof getPostsMetadata>> | null = null
+let cacheTime = 0
+const CACHE_DURATION = 365 * 24 * 60 * 60 * 1000 // 1 year (365 days) to align with CDN cache
+
+async function getCachedPosts() {
+  const now = Date.now()
+  if (!cachedPosts || now - cacheTime > CACHE_DURATION) {
+    cachedPosts = await getPostsMetadata()
+    cacheTime = now
+  }
+  return cachedPosts
+}
+
 export async function GET() {
-  const posts = await getPostsMetadata();
+  const posts = await getCachedPosts();
 
   const itemsXml = posts
     .map(
@@ -47,7 +59,7 @@ export async function GET() {
   return new Response(rssFeed, {
     headers: {
       "Content-Type": "application/xml",
-      "Cache-Control": "public, max-age=3600, s-maxage=3600",
+      "Cache-Control": "public, max-age=31536000, s-maxage=31536000, immutable", // 1 year cache
     },
   });
 } 
