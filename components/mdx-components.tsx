@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, Activity, TrendingUp, AlertTriangle, Info } from "lucide-react"
 import type { MDXComponents } from "mdx/types"
 import Image from "next/image"
 import Link from "next/link"
@@ -313,6 +313,10 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ),
     Mermaid: ({ className, ...props }) => <Mermaid className={cn("", className)} {...props} />,
     ChevronDown: ({ className, ...props }) => <ChevronDown className={cn("", className)} {...props} />,
+    Activity: ({ className, ...props }) => <Activity className={cn("", className)} {...props} />,
+    TrendingUp: ({ className, ...props }) => <TrendingUp className={cn("", className)} {...props} />,
+    AlertTriangle: ({ className, ...props }) => <AlertTriangle className={cn("", className)} {...props} />,
+    Info: ({ className, ...props }) => <Info className={cn("", className)} {...props} />,
     Link: ({ href, className, children, ...props }) => (
       <Link
         href={href as string}

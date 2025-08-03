@@ -1,5 +1,5 @@
 import Fuse from "fuse.js";
-import { Calendar, Code2, Heart, IndianRupee, Plane, Tag, Users, Wrench, X } from "lucide-react";
+import { Activity, Calendar, Code2, Heart, IndianRupee, Plane, Tag, Users, Wrench, X } from "lucide-react";
 import Link from "next/link";
 
 
@@ -58,44 +58,51 @@ export default async function BlogPage({
     {
       slug: 'tech',
       title: 'Tech & Software Engineering',
-      description: 'Technology, software engineering, and development.',
+      description: 'Technical tutorials, development insights, and programming concepts.',
       icon: Code2,
-      color: 'from-blue-500 to-purple-600'
+      color: 'from-blue-500 to-cyan-500'
     },
     {
       slug: 'travel',
-      title: 'Travel',
-      description: 'Travel guides, destinations, and adventure stories',
+      title: 'Travel & Exploration',
+      description: 'Destination guides, travel tips, and cultural experiences.',
       icon: Plane,
-      color: 'from-green-500 to-blue-500'
+      color: 'from-green-500 to-emerald-500'
     },
     {
       slug: 'spiritual',
-      title: 'Spiritual',
-      description: 'Spiritual insights, personal growth, and mindfulness',
+      title: 'Spiritual & Philosophy',
+      description: 'Personal growth, mindfulness, and philosophical reflections.',
       icon: Heart,
       color: 'from-purple-500 to-pink-500'
     },
     {
+      slug: 'money',
+      title: 'Money Matters',
+      description: 'Personal finance, trading insights, and financial strategies.',
+      icon: IndianRupee,
+      color: 'from-green-600 to-green-700'
+    },
+    {
       slug: 'personal',
-      title: 'Personal',
-      description: 'Personal stories, life lessons, and reflections',
+      title: 'Personal Stories',
+      description: 'Life lessons, career insights, and personal experiences.',
       icon: Users,
       color: 'from-orange-500 to-red-500'
     },
     {
       slug: 'tooling',
-      title: 'Tooling',
-      description: 'Tools, utilities, and productivity enhancements',
+      title: 'Tooling & Utilities',
+      description: 'Productivity tools, utilities, and workflow optimization.',
       icon: Wrench,
-      color: 'from-gray-600 to-slate-500'
+      color: 'from-gray-500 to-slate-500'
     },
     {
-      slug: 'money',
-      title: 'Money Matters',
-      description: 'Personal finance, investing, and financial literacy',
-      icon: IndianRupee,
-      color: 'from-green-600 to-emerald-500'
+      slug: 'health',
+      title: 'Health & Wellness',
+      description: 'Physical health, mental wellness, and lifestyle optimization.',
+      icon: Activity,
+      color: 'from-red-500 to-pink-500'
     }
   ];
 

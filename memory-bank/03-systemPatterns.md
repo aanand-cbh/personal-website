@@ -86,6 +86,66 @@ const serializedContent = await serialize(content, options)
 <MDXWrapper source={serializedContent} />
 ```
 
+### 3.1. MDX Component Mapping Pattern
+**CRITICAL**: When adding new components or icons to MDX content, they must be mapped in BOTH files to work properly.
+
+**Problem**: 
+```
+Error: Expected component `Activity` to be defined: you likely forgot to import, pass, or provide it.
+```
+
+**Root Cause**: The project uses two separate MDX component systems:
+1. `components/mdx-components.tsx` - For client-side MDX (when `clientSide: true`)
+2. `components/mdx.tsx` - For server-side MDX (when `clientSide: false` or not set)
+
+**Solution**: Add components to BOTH files:
+
+**File 1**: `components/mdx-components.tsx` (Client-side MDX)
+```typescript
+import { Activity, TrendingUp, AlertTriangle, Info } from "lucide-react"
+
+export function useMDXComponents(components: MDXComponents): MDXComponents {
+  return {
+    // ... existing components
+    Activity: ({ className, ...props }) => <Activity className={cn("", className)} {...props} />,
+    TrendingUp: ({ className, ...props }) => <TrendingUp className={cn("", className)} {...props} />,
+    AlertTriangle: ({ className, ...props }) => <AlertTriangle className={cn("", className)} {...props} />,
+    Info: ({ className, ...props }) => <Info className={cn("", className)} {...props} />,
+    // ... rest of components
+  }
+}
+```
+
+**File 2**: `components/mdx.tsx` (Server-side MDX)
+```typescript
+import { ChevronDown, Activity, TrendingUp, AlertTriangle, Info } from "lucide-react"
+
+const components = {
+  // ... existing components
+  ChevronDown,
+  Activity,
+  TrendingUp,
+  AlertTriangle,
+  Info,
+}
+```
+
+**When to Use Each**:
+- **Server-side MDX** (`mdx.tsx`): Static content, better performance, SEO-friendly
+- **Client-side MDX** (`mdx-components.tsx`): Interactive components, state management
+
+**Checklist for New Components**:
+- [ ] Add import to `components/mdx-components.tsx`
+- [ ] Add component mapping to `components/mdx-components.tsx`
+- [ ] Add import to `components/mdx.tsx`
+- [ ] Add component to `components` object in `components/mdx.tsx`
+- [ ] Test with `npm run build` to verify no missing component errors
+
+**Common Components That Need Mapping**:
+- **UI Components**: Card, Badge, Alert, Button, etc.
+- **Lucide Icons**: Activity, TrendingUp, AlertTriangle, Info, etc.
+- **Custom Components**: Any React component used in MDX content
+
 ### 4. Johnny.Decimal Blog Post Naming Convention
 **CRITICAL**: All new blog posts must follow Johnny.Decimal naming to maintain IDE organization and prevent file chaos.
 
@@ -97,8 +157,8 @@ const serializedContent = await serialize(content, options)
 - **Spiritual**: `30` (Spirituality & Philosophy)
 - **Money**: `40` (Finance & Money Matters)
 - **Personal**: `50` (Personal Stories & Life)
+- **Health**: `60` (Health & Wellness)
 - **Tooling**: `70` (Tooling & Utilities)
-- **Health**: `60` (Health & Wellness) - Future category
 
 ### 5. MDX Hydration Error Prevention Pattern
 **CRITICAL**: MDX automatically wraps content in `<p>` tags, causing hydration errors when using `<p>` tags inside components.
@@ -162,6 +222,12 @@ content/blog/spiritual/
 
 content/blog/money/
 └── 40.0001-triple-witching-hour-explained.mdx
+
+content/blog/personal/
+└── (future personal posts)
+
+content/blog/health/
+└── (future health posts)
 
 content/blog/tooling/
 └── 70.0001-how-to-add-compress-with-caesium.mdx

@@ -115,12 +115,17 @@ export default function RootLayout({
                 const originalSetAttribute = Element.prototype.setAttribute;
                 const originalClassNameSetter = Object.getOwnPropertyDescriptor(Element.prototype, 'className').set;
                 
+                // Override setAttribute to prevent browser extension modifications
                 Element.prototype.setAttribute = function(name, value) {
                   if (name === 'class' || name === 'className') {
                     // Allow only specific classes or prevent modification
                     if (typeof value === 'string' && !value.includes('cf_') && !value.includes('clutter')) {
                       return originalSetAttribute.call(this, name, value);
                     }
+                    return;
+                  }
+                  // Prevent Dark Reader and other extension attributes
+                  if (name.startsWith('data-darkreader') || name.startsWith('data-extension')) {
                     return;
                   }
                   return originalSetAttribute.call(this, name, value);
@@ -136,14 +141,49 @@ export default function RootLayout({
                     get: Object.getOwnPropertyDescriptor(Element.prototype, 'className').get
                   });
                 }
+
+                // Override style setter to prevent Dark Reader styles
+                const originalStyleSetter = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'style').set;
+                Object.defineProperty(HTMLElement.prototype, 'style', {
+                  set: function(value) {
+                    if (typeof value === 'string' && !value.includes('--darkreader')) {
+                      return originalStyleSetter.call(this, value);
+                    }
+                  },
+                  get: Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'style').get
+                });
                 
                 // Monitor for new elements and clean them
                 const observer = new MutationObserver(function(mutations) {
                   mutations.forEach(function(mutation) {
-                    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    if (mutation.type === 'attributes') {
                       const target = mutation.target;
-                      if (target && target.className && (target.className.includes('cf_') || target.className.includes('clutter'))) {
-                        target.className = target.className.replace(/cf_[^\\s]*/g, '').replace(/clutter[^\\s]*/g, '').trim();
+                      if (target) {
+                        // Remove Dark Reader attributes
+                        if (target.hasAttribute && target.hasAttribute('data-darkreader-inline-stroke')) {
+                          target.removeAttribute('data-darkreader-inline-stroke');
+                        }
+                        if (target.hasAttribute && target.hasAttribute('data-darkreader-inline-fill')) {
+                          target.removeAttribute('data-darkreader-inline-fill');
+                        }
+                        if (target.hasAttribute && target.hasAttribute('data-darkreader-inline-bgcolor')) {
+                          target.removeAttribute('data-darkreader-inline-bgcolor');
+                        }
+                        
+                        // Remove Dark Reader styles
+                        if (target.style && target.style.cssText.includes('--darkreader')) {
+                          const cleanStyles = target.style.cssText.replace(/--darkreader[^;]+;?/g, '').trim();
+                          if (cleanStyles) {
+                            target.style.cssText = cleanStyles;
+                          } else {
+                            target.removeAttribute('style');
+                          }
+                        }
+                        
+                        // Clean class names
+                        if (target.className && (target.className.includes('cf_') || target.className.includes('clutter'))) {
+                          target.className = target.className.replace(/cf_[^\\s]*/g, '').replace(/clutter[^\\s]*/g, '').trim();
+                        }
                       }
                     }
                   });
@@ -154,11 +194,45 @@ export default function RootLayout({
                   setTimeout(() => {
                     observer.observe(document.body, {
                       attributes: true,
-                      attributeFilter: ['class'],
+                      attributeFilter: ['class', 'style', 'data-darkreader-inline-stroke', 'data-darkreader-inline-fill', 'data-darkreader-inline-bgcolor'],
                       subtree: true
                     });
                   }, delay);
                 });
+
+                // Clean existing elements on load
+                function cleanExistingElements() {
+                  const elements = document.querySelectorAll('*');
+                  elements.forEach(function(element) {
+                    // Remove Dark Reader attributes
+                    if (element.hasAttribute('data-darkreader-inline-stroke')) {
+                      element.removeAttribute('data-darkreader-inline-stroke');
+                    }
+                    if (element.hasAttribute('data-darkreader-inline-fill')) {
+                      element.removeAttribute('data-darkreader-inline-fill');
+                    }
+                    if (element.hasAttribute('data-darkreader-inline-bgcolor')) {
+                      element.removeAttribute('data-darkreader-inline-bgcolor');
+                    }
+                    
+                    // Remove Dark Reader styles
+                    if (element.style && element.style.cssText.includes('--darkreader')) {
+                      const cleanStyles = element.style.cssText.replace(/--darkreader[^;]+;?/g, '').trim();
+                      if (cleanStyles) {
+                        element.style.cssText = cleanStyles;
+                      } else {
+                        element.removeAttribute('style');
+                      }
+                    }
+                  });
+                }
+
+                // Run cleanup when DOM is ready
+                if (document.readyState === 'loading') {
+                  document.addEventListener('DOMContentLoaded', cleanExistingElements);
+                } else {
+                  cleanExistingElements();
+                }
               })();
             `,
           }}

@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react"
+import { Activity, AlertTriangle, ChevronDown, Info, TrendingUp } from "lucide-react"
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote'
 import { MDXRemote } from "next-mdx-remote"
 import Image from "next/image"
@@ -150,6 +150,10 @@ const components = {
   CollapsibleContent,
   CollapsibleTrigger,
   ChevronDown,
+  Activity,
+  TrendingUp,
+  AlertTriangle,
+  Info,
 }
 
 // Server component for MDX rendering

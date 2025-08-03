@@ -4,17 +4,74 @@
 As of August 3, 2025, the primary focus is on:
 
 1. **Vercel Optimizations**: Successfully implemented comprehensive Vercel-specific optimizations for cost reduction and performance improvement
-2. **Blog System Enhancement**: Recently completed major categorization overhaul with tier system
-3. **New Category Addition**: Successfully implemented "Money Matters" category for personal finance content
-4. **New Categories Implementation**: Added "Personal" and "Tooling" categories with full functionality
-5. **Content Reorganization**: Moved Caesium blog post from tech to tooling category
-6. **File Structure Optimization**: Implemented category-based file organization 
-7. **Content Classification**: Reference/revisit/read tier system with reusable utilities
-8. **Documentation**: Maintaining comprehensive memory bank system
-9. **UI/UX Optimization**: Flexible component usage for optimal user experience
-10. **Blog Post Creation Protocol**: MANDATORY process for all new blog posts (see systemPatterns.md)
+2. **Health Category Addition**: Successfully implemented "Health & Wellness" category for health and lifestyle content
+3. **Blog System Enhancement**: Recently completed major categorization overhaul with tier system
+4. **New Category Addition**: Successfully implemented "Money Matters" category for personal finance content
+5. **New Categories Implementation**: Added "Personal" and "Tooling" categories with full functionality
+6. **Content Reorganization**: Moved Caesium blog post from tech to tooling category
+7. **File Structure Optimization**: Implemented category-based file organization 
+8. **Content Classification**: Reference/revisit/read tier system with reusable utilities
+9. **Documentation**: Maintaining comprehensive memory bank system
+10. **UI/UX Optimization**: Flexible component usage for optimal user experience
+11. **Blog Post Creation Protocol**: MANDATORY process for all new blog posts (see systemPatterns.md)
 
 ## Recent Changes
+
+### Major Implementation: Health & Wellness Category Addition with UI Enhancement
+**Completed**: Added new "Health & Wellness" category with full functionality and beautiful UI components
+
+**Key Changes**:
+- Added "Health & Wellness" category to main blog page with Activity icon and red-pink gradient
+- Created `/blog/health` category page using CategoryBlogPage component
+- Created `/blog/health/[slug]` individual post route with full functionality
+- Created `content/blog/health/` directory for content organization
+- Updated Johnny.Decimal naming convention to include Health category (ID: 60)
+- **UI Enhancement**: Created comprehensive blood markers section using Card, Badge, Alert, and Separator components
+- **Icon Integration**: Added Lucide React icons (Activity, TrendingUp, AlertTriangle, Info) with proper MDX mapping
+- **MDX Component Mapping**: Resolved critical build error by adding icons to both `mdx-components.tsx` and `mdx.tsx`
+- Implemented proper category filtering and SEO optimization
+- Verified build success with all validations passing (39 static pages generated)
+
+**Technical Challenge Resolved**:
+- **Problem**: Build error "Expected component `Activity` to be defined"
+- **Root Cause**: Lucide React icons needed mapping in both MDX component systems
+- **Solution**: Added icons to both `components/mdx-components.tsx` (client-side) and `components/mdx.tsx` (server-side)
+- **Documentation**: Added comprehensive MDX Component Mapping Pattern to systemPatterns.md
+
+**Benefits Achieved**:
+- Expanded content scope to include health, wellness, and lifestyle topics
+- Better content organization with dedicated health category
+- Improved content discoverability for health and wellness content
+- **Beautiful UI**: Professional card-based layout for medical information
+- **Scalability**: Demonstrated ease of adding new categories using existing patterns
+- **Maintainability**: Consistent implementation across all category pages
+- **Icon Resolution**: Used Activity icon to avoid conflict with Heart icon used for Spiritual category
+- **Knowledge Preservation**: Documented MDX component mapping pattern for future reference
+**Completed**: Added new "Health & Wellness" category with full functionality
+
+**Key Changes**:
+- Added "Health & Wellness" category to main blog page with Activity icon and red-pink gradient
+- Created `/blog/health` category page using CategoryBlogPage component
+- Created `/blog/health/[slug]` individual post route with full functionality
+- Created `content/blog/health/` directory for content organization
+- Updated Johnny.Decimal naming convention to include Health category (ID: 60)
+- Implemented proper category filtering and SEO optimization
+- Verified build success with all validations passing (38 static pages generated)
+
+**Benefits Achieved**:
+- Expanded content scope to include health, wellness, and lifestyle topics
+- Better content organization with dedicated health category
+- Improved content discoverability for health and wellness content
+- **Scalability**: Demonstrated ease of adding new categories using existing patterns
+- **Maintainability**: Consistent implementation across all category pages
+- **Icon Resolution**: Used Activity icon to avoid conflict with Heart icon used for Spiritual category
+
+**Build Results**:
+- ✅ All optimizations successfully implemented
+- ✅ Build passes with no errors
+- ✅ 38 static pages generated successfully (up from 37)
+- ✅ Health category routes properly configured
+- ✅ All routes properly configured with appropriate caching
 
 ### Major Implementation: Vercel Optimizations Complete
 **Completed**: Implemented comprehensive Vercel-specific optimizations based on official guidelines
@@ -243,12 +300,22 @@ As of August 3, 2025, the primary focus is on:
 - URL-based tier filtering with clear user feedback
 
 ### Performance Fixes
-**Hydration Error Resolution**:
-- Fixed breadcrumbs component using inconsistent `baseUrl` generation
-- Added `suppressHydrationWarning` to body tag for browser extension compatibility
-- Cleaned up verbose console logging in MDX processing
+**Dark Reader Hydration Error Resolution** (August 3, 2025):
+- **Root Cause Identified**: Dark Reader browser extension adding `data-darkreader-inline-stroke` attributes and `--darkreader` styles to SVG elements before React hydration
+- **Error Pattern**: Hydration mismatch between server-rendered HTML and client-side DOM due to browser extension modifications
+- **Solution Applied**: 
+  - Enhanced browser extension prevention script to specifically target Dark Reader attributes and styles
+  - Added `suppressHydrationWarning` to theme toggle button
+  - Implemented comprehensive cleanup for `data-darkreader-*` attributes and `--darkreader` CSS variables
+  - Added style setter override to prevent Dark Reader style modifications
+  - Enhanced MutationObserver to monitor and clean Dark Reader modifications in real-time
+- **Components Updated**:
+  - `app/layout.tsx` - Enhanced browser extension prevention with Dark Reader specific handling
+  - `components/theme-toggle.tsx` - Added suppressHydrationWarning to prevent theme toggle hydration errors
+- **Result**: Comprehensive protection against Dark Reader and similar browser extension interference during hydration
+- **Status**: Resolved - site now loads without hydration errors even with Dark Reader enabled
 
-**Accordion Component Fix**:
+**Hydration Error Resolution**:
 - **Root Cause Identified**: Accordion component had custom hash-based state management causing client-side rendering issues
 - **Server vs Client Rendering**: Collapsible components work in server-side rendering, Accordion components failed in client-side rendering
 - **Solution Applied**: Removed custom `window.location.hash` state management from accordion component
