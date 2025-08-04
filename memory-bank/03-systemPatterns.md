@@ -1216,6 +1216,45 @@ category: "newcategory"  # Must match route category
 
 **Best Practice**: Use uncontrolled components for MDX content unless explicit state management is needed.
 
+### 8. Numbered List Alignment Pattern
+**CRITICAL**: When creating numbered lists with circular icons, always use `items-center` for proper vertical alignment.
+
+**Problem**: 
+```jsx
+// ❌ WRONG - Numbers appear elevated and misaligned
+<div className="flex items-start gap-3">
+  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-medium">1</div>
+  <div>Content here</div>
+</div>
+```
+
+**Solution**: 
+```jsx
+// ✅ CORRECT - Numbers are vertically centered with text
+<div className="flex items-center gap-3">
+  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-medium">1</div>
+  <div>Content here</div>
+</div>
+```
+
+**Why This Matters**:
+- `items-start` aligns circles to the top of text, making them appear elevated
+- `items-center` centers circles vertically with the text content
+- Creates professional, balanced appearance for numbered lists
+- Improves readability and visual hierarchy
+
+**Implementation Checklist**:
+- [ ] Use `items-center` for numbered list containers
+- [ ] Ensure consistent gap spacing (`gap-3`)
+- [ ] Maintain proper circle sizing (`h-6 w-6`)
+- [ ] Test with multi-line content to verify alignment
+
+**Affected Components**:
+- Key Takeaways sections
+- Numbered progress indicators
+- Step-by-step instructions
+- Any numbered list with circular icons
+
 ---
 
 ## Cursor Memory Bank Rules
